@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neuro — Flashcards</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root {
+  --bg: #F1F1F1;
+  --surface: #FFFFFF;
+  --text: #1A1018;
+  --text-secondary: #5A4A54;
+  --plommon-deep: #4F0433;
+  --plommon-mid: #870052;
+  --plommon-light: #EDDBE4;
+  --plommon-ghost: #F6EDF3;
+  --border: #D8CDD4;
+  --knew: #2D7D46;
+  --knew-bg: #E8F5EC;
+  --unsure: #B8860B;
+  --unsure-bg: #FFF8E1;
+  --missed: #C4382A;
+  --missed-bg: #FCEAE8;
+  --pill-bg: #E8DDE4;
+  --pill-active-bg: #4F0433;
+  --pill-active-text: #FFFFFF;
+  --progress-track: #E8DDE4;
+  --progress-fill: #870052;
+  --shadow: 0 1px 3px rgba(79,4,51,0.08), 0 4px 12px rgba(79,4,51,0.04);
+  --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A1018; --surface: #2A1F26; --text: #EDE6EA; --text-secondary: #A89BA3;
+    --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836;
+    --plommon-ghost: #2D1F28; --border: #3D2F38;
+    --knew: #5ABA74; --knew-bg: #1E2E22;
+    --unsure: #D4A843; --unsure-bg: #2E2A1A;
+    --missed: #E8695B; --missed-bg: #2E1F1E;
+    --pill-bg: #352A32; --pill-active-bg: #C27AAE; --pill-active-text: #1A1018;
+    --progress-track: #352A32; --progress-fill: #C27AAE;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1A1018; --surface: #2A1F26; --text: #EDE6EA; --text-secondary: #A89BA3;
+  --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836;
+  --plommon-ghost: #2D1F28; --border: #3D2F38;
+  --knew: #5ABA74; --knew-bg: #1E2E22;
+  --unsure: #D4A843; --unsure-bg: #2E2A1A;
+  --missed: #E8695B; --missed-bg: #2E1F1E;
+  --pill-bg: #352A32; --pill-active-bg: #C27AAE; --pill-active-text: #1A1018;
+  --progress-track: #352A32; --progress-fill: #C27AAE;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.app { max-width: 660px; margin: 0 auto; padding: 20px 16px 100px; }
+
+.header { margin-bottom: 24px; }
+.header h1 { font-size: 22px; font-weight: 700; color: var(--plommon-deep); margin-bottom: 2px; }
+.header p { font-size: 13px; color: var(--text-secondary); }
+.header .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-style: italic; }
+
+.stats { display: flex; gap: 12px; margin-bottom: 20px; font-size: 13px; color: var(--text-secondary); font-variant-numeric: tabular-nums; flex-wrap: wrap; }
+.stats strong { font-weight: 700; }
+.s-knew strong { color: var(--knew); }
+.s-unsure strong { color: var(--unsure); }
+.s-missed strong { color: var(--missed); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.pill {
+  font-family: var(--font); font-size: 12px; font-weight: 500; padding: 5px 12px;
+  border-radius: 100px; border: 1px solid var(--border); background: var(--pill-bg);
+  color: var(--text-secondary); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.pill:hover { border-color: var(--plommon-mid); color: var(--text); }
+.pill.active { background: var(--pill-active-bg); color: var(--pill-active-text); border-color: transparent; }
+
+.card {
+  background: var(--surface); border-radius: 10px; padding: 28px 24px;
+  box-shadow: var(--shadow); margin-bottom: 16px;
+}
+.card-section {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--plommon-mid); margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.card-qnum {
+  font-size: 20px; font-weight: 700; color: var(--plommon-deep); letter-spacing: 0;
+  text-transform: none;
+}
+.card-prompt {
+  font-size: 17px; font-weight: 500; line-height: 1.5; text-wrap: balance;
+}
+.card-prompt .hint { font-size: 14px; color: var(--text-secondary); font-weight: 400; }
+
+.reveal-btn {
+  font-family: var(--font); font-size: 15px; font-weight: 500; padding: 14px 24px;
+  border-radius: 8px; border: 2px dashed var(--border); background: var(--plommon-ghost);
+  color: var(--plommon-mid); cursor: pointer; width: 100%; margin-top: 20px;
+  transition: all 0.15s;
+}
+.reveal-btn:hover { border-color: var(--plommon-mid); background: var(--plommon-light); }
+
+.answer-area { margin-top: 20px; padding: 16px; border-radius: 8px; background: var(--plommon-ghost); border: 1px solid var(--plommon-light); font-size: 14px; line-height: 1.7; }
+
+.rate-row { display: flex; gap: 8px; margin-top: 16px; }
+.rate-btn {
+  font-family: var(--font); font-size: 14px; font-weight: 700; padding: 10px 0;
+  border-radius: 8px; border: 2px solid var(--border); background: var(--surface);
+  cursor: pointer; flex: 1; transition: all 0.12s; text-align: center;
+}
+.rate-btn:hover { transform: translateY(-1px); }
+.rate-btn.knew { color: var(--knew); border-color: var(--knew); }
+.rate-btn.knew:hover { background: var(--knew-bg); }
+.rate-btn.unsure { color: var(--unsure); border-color: var(--unsure); }
+.rate-btn.unsure:hover { background: var(--unsure-bg); }
+.rate-btn.missed { color: var(--missed); border-color: var(--missed); }
+.rate-btn.missed:hover { background: var(--missed-bg); }
+
+.nav-row { display: flex; gap: 10px; margin-top: 16px; }
+.nav-btn {
+  font-family: var(--font); font-size: 14px; font-weight: 700; padding: 10px 20px;
+  border-radius: 8px; border: none; cursor: pointer; transition: background 0.15s;
+}
+.nav-btn.secondary { background: transparent; color: var(--plommon-deep); border: 2px solid var(--border); }
+.nav-btn.secondary:hover { border-color: var(--plommon-mid); color: var(--plommon-mid); }
+
+.progress-wrap {
+  position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
+  border-top: 1px solid var(--border); padding: 12px 16px; z-index: 10;
+}
+.progress-inner { max-width: 660px; margin: 0 auto; }
+.progress-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.progress-track { height: 6px; border-radius: 3px; background: var(--progress-track); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; background: var(--progress-fill); transition: width 0.3s ease; }
+
+.finish { text-align: center; padding: 48px 24px; }
+.finish h2 { font-size: 24px; font-weight: 700; color: var(--plommon-deep); margin-bottom: 16px; }
+.finish p { font-size: 15px; color: var(--text-secondary); margin-bottom: 24px; }
+.restart-btn {
+  font-family: var(--font); font-size: 15px; font-weight: 700; padding: 12px 32px;
+  border-radius: 8px; border: 2px solid var(--plommon-deep); background: transparent;
+  color: var(--plommon-deep); cursor: pointer; margin: 6px; transition: all 0.15s;
+}
+.restart-btn:hover { background: var(--plommon-ghost); }
+.restart-btn.primary { background: var(--plommon-deep); color: #fff; border-color: var(--plommon-deep); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .restart-btn.primary { color: #1A1018; } }
+:root[data-theme="dark"] .restart-btn.primary { color: #1A1018; }
+
+.breakdown { text-align: left; margin: 24px 0; }
+.breakdown h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.breakdown-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-name { flex: 1; }
+.breakdown-counts { display: flex; gap: 8px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.breakdown-counts span { min-width: 20px; text-align: center; }
+.c-knew { color: var(--knew); }
+.c-unsure { color: var(--unsure); }
+.c-missed { color: var(--missed); }
+
+[hidden] { display: none !important; }
+@media (max-width: 480px) { .card { padding: 20px 16px; } .card-prompt { font-size: 16px; } .rate-btn { font-size: 13px; padding: 8px 0; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Neuro — Flashcards</h1>
+    <p>Tänk efter, vänd kortet, betygsätt dig själv</p>
+    <div class="sub">Baserat på tentaguiden — Medicinska ämnen 1</div>
+  </div>
+  <div class="stats">
+    <span>Kort <strong id="stat-num">1</strong> / <strong id="stat-total">0</strong></span>
+    <span class="s-knew">Kunde: <strong id="s-knew">0</strong></span>
+    <span class="s-unsure">Osäker: <strong id="s-unsure">0</strong></span>
+    <span class="s-missed">Missade: <strong id="s-missed">0</strong></span>
+  </div>
+  <div class="pills" id="pills"></div>
+  <div id="card-area">
+    <div class="card" id="card">
+      <div class="card-section" id="card-section"></div>
+      <div class="card-prompt" id="card-prompt"></div>
+      <button class="reveal-btn" id="reveal-btn" onclick="reveal()">Visa svar</button>
+      <div class="answer-area" id="answer-area" hidden></div>
+      <div class="rate-row" id="rate-row" hidden>
+        <button class="rate-btn knew" onclick="rate('knew')">Kunde</button>
+        <button class="rate-btn unsure" onclick="rate('unsure')">Osäker</button>
+        <button class="rate-btn missed" onclick="rate('missed')">Missade</button>
+      </div>
+      <div class="nav-row" id="nav-row">
+        <button class="nav-btn secondary" id="prev-btn" onclick="go(-1)">← Föregående</button>
+        <button class="nav-btn secondary" id="next-btn" onclick="go(1)" style="margin-left:auto">Hoppa över →</button>
+      </div>
+    </div>
+  </div>
+  <div id="finish-area" hidden>
+    <div class="card finish">
+      <h2>Genomgång klar!</h2>
+      <p id="final-msg"></p>
+      <div class="breakdown" id="breakdown"></div>
+      <button class="restart-btn primary" onclick="restart('all')">Kör alla igen</button>
+      <button class="restart-btn" onclick="restart('unsure')">Osäkra + missade</button>
+      <button class="restart-btn" onclick="restart('missed')">Bara missade</button>
+    </div>
+  </div>
+</div>
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-label" id="progress-label">0 / 0</div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+</div>
+<script>
+const C=[
+{s:1,n:"Grundbegrepp",p:"Vad är ett fokalsymtom, och varför är det centralt i neurologisk diagnostik?",a:"Fokalsymtom = symtom som pekar på en avgränsad skada i nervsystemet. Centralt eftersom symtomet avslöjar <em>var</em> skadan sitter — neurologisk diagnostik bygger på att lokalisera skadan utifrån symtomen."},
+{s:1,n:"Grundbegrepp",p:"Bortfallssymtom kontra retningssymtom — definiera och ge exempel.",a:"<strong>Bortfall:</strong> funktion faller bort (pares, afasi, känselbortfall). <strong>Retning:</strong> nervceller avfyrar okontrollerat (epileptiskt anfall, neuropatisk smärta, myokloni). Viktigt för diagnostik — retning talar ofta för irritation av annars intakt vävnad."},
+{s:1,n:"Grundbegrepp",p:"Monopares, hemipares, parapares, tetrapares — vilken skadenivå talar varje utbredning för?",a:"<strong>Monopares</strong> = en extremitet (perifer nerv/rot). <strong>Hemipares</strong> = en kroppshalva (kontralateral hjärnskada). <strong>Parapares</strong> = båda benen (ryggmärg). <strong>Tetrapares</strong> = alla fyra (hög cervikal ryggmärg/hjärnstam)."},
+{s:1,n:"Grundbegrepp",p:"Spasticitet — uppkomstmekanism och fällknivsfenomen.",a:"Bortfall av ÖMN-hämning → överaktiv reflexbåge → hastighetsberoende tonusökning. <strong>Fällknivsfenomen:</strong> motståndet bygger upp vid passiv rörelse och släpper plötsligt. Drabbar mest flexorer i arm, extensorer i ben."},
+{s:1,n:"Grundbegrepp",p:"Rigiditet — hur skiljer den sig från spasticitet?",a:"Rigiditet: <strong>hastighetsoberoende</strong>, jämnt motstånd genom hela rörelseomfånget (blyrörsfenomen). Vid Parkinson. Spasticitet: hastighetsberoende, fällknivsfenomen. Vid central skada (stroke, MS, SCI)."},
+{s:1,n:"Grundbegrepp",p:"Tre tremortyper — uppträdande och typisk orsak.",a:"<strong>Vilotremor:</strong> i vila, avtar vid rörelse (Parkinson). <strong>Postural/aktionstremor:</strong> vid hållande av position (essentiell tremor). <strong>Intentionstremor:</strong> tilltar vid målinriktad rörelse (cerebellär skada)."},
+{s:1,n:"Grundbegrepp",p:"Funktionella neurologiska tillstånd — definition och bemötande.",a:"Verkliga neurologiska symtom utan påvisbar organisk skada. Vanligt (stor andel av neuro-konsultationer). <strong>Inte simulering.</strong> Bemötande: ta symtomen på allvar, förklara vad tillståndet är, FT + KBT."},
+
+{s:2,n:"Lobar & funktioner",p:"Frontalloben — huvudfunktioner och vad ger skada?",a:"Motorik (primär motorisk cortex), planering, omdöme, personlighet, Brocas area (motorisk afasi). Skada → pares kontralateralt, personlighetsförändring, apraxi, motorisk afasi."},
+{s:2,n:"Lobar & funktioner",p:"Parietalloben — huvudfunktioner och vad ger skada?",a:"Somatosensorik, rumsuppfattning, integration av sinnesintryck. Skada → känselbortfall kontralateralt, neglekt (höger hemisfär), apraxi, agnosi."},
+{s:2,n:"Lobar & funktioner",p:"Afasi: motorisk (Broca) vs sensorisk (Wernicke).",a:"<strong>Broca</strong> (frontal): förstår men kan inte uttrycka sig — icke-flytande, telegrafiskt. <strong>Wernicke</strong> (temporal): flytande tal utan innehåll, nedsatt förståelse. Båda i dominant hemisfär (vanligen vänster)."},
+{s:2,n:"Lobar & funktioner",p:"Apraxi — definition och hur testas det?",a:"Oförmåga att utföra komplexa inlärda handlingar trots bevarad motorik och förståelse. Test: 'visa hur du borstar tänderna' — patienten kan inte planera handlingssekvensen."},
+{s:2,n:"Lobar & funktioner",p:"Kortikal blindhet — varför bevarad pupillreflex?",a:"Skadan sitter i synbarken (occipitallob), inte i ögat/synnerven. Pupillreflexbågen går via hjärnstammen (pretektala kärnan → Edinger-Westphal → n. III) och passerar aldrig cortex → bevarad."},
+
+{s:3,n:"Synbanan",p:"Skada i chiasma → vilket synfältsbortfall + klassisk orsak?",a:"<strong>Bitemporal hemianopsi</strong> (yttre synfälten bort bilateralt). Korsande nasala fibrer skadas. Klassisk orsak: hypofystumör som trycker underifrån. <em>Tentafråga!</em>"},
+{s:3,n:"Synbanan",p:"Skada bakom chiasma → vilket synfältsbortfall?",a:"<strong>Homonym hemianopsi</strong> — samma synfältshalva bort i båda ögonen. Höger tractus/strålning/occipitallob → vänster synfält bort. Kontralateralt."},
+
+{s:4,n:"Central vs perifer pares",p:"Jämför central vs perifer pares: tonus, reflexer, Babinski, atrofi.",a:"<strong>Central (ÖMN):</strong> spasticitet (↑ tonus), stegrade reflexer, positivt Babinski, ingen atrofi. <strong>Perifer (NMN):</strong> slapp (↓ tonus), nedsatta/bortfallna reflexer, negativt Babinski, atrofi + fascikulationer."},
+{s:4,n:"Synbanan",p:"Facialispares: central vs perifer — vad skiljer?",a:"<strong>Perifer:</strong> hela ansiktshalvan — kan INTE rynka pannan, INTE stänga ögat. <strong>Central:</strong> bara nedre ansiktshalvan — KAN rynka pannan (bilateral innervation av pannmuskler)."},
+{s:4,n:"Central vs perifer pares",p:"Gångmönster: circumduktion → ?, tuppfjäts → ?, småsteg + framåtlutad → ?",a:"<strong>Circumduktion:</strong> central spastisk hemipares. <strong>Tuppfjäts (steppage):</strong> perifer droppfot (peroneuspares). <strong>Småsteg + framåtlutad:</strong> Parkinson."},
+
+{s:5,n:"Stroke",p:"Varför krävs CT innan behandling?",a:"Man kan inte kliniskt skilja ischemisk stroke från blödning. CT visar blödning direkt (vit). Ischemi syns inte initialt — men man kan utesluta blödning → säkert att ge trombolys. Trombolys vid blödning = fatalt."},
+{s:5,n:"Stroke",p:"TIA — definition + varför akut handläggning?",a:"Övergående fokalneurologiska symtom utan bestående hjärnskada. <strong>Varningssignal:</strong> 10–15% utvecklar stroke inom 90 dagar, hälften inom 48 timmar → akut handläggning."},
+{s:5,n:"Stroke",p:"A. cerebri media — försörjningsområde + typiska bortfall?",a:"Laterala hemisfären: motorisk/sensorisk cortex (arm+ansikte > ben), Broca/Wernicke. Bortfall: kontralateral hemipares (arm > ben), afasi (dominant) / neglekt (icke-dominant)."},
+{s:5,n:"Stroke",p:"Vertebrobasilaris — typiska symtom?",a:"Hjärnstam + lillhjärna: yrsel, dubbelseende, dysfagi, dysartri, ataxi, korsade symtom (kranialnervsbortfall ipsilateralt + motoriskt/sensoriskt kontralateralt). <strong>Ögondeviation mot friska sidan</strong> (jfr supratentoriellt: mot skadan)."},
+{s:5,n:"Stroke",p:"Trombolys — tidsfönster? Trombektomi — tidsfönster + indikation?",a:"<strong>IV-trombolys:</strong> inom 4,5 timmar. <strong>Trombektomi:</strong> inom 6–24 timmar, vid stor kärlocklusion (LVO). 'Time is brain' — ~2 miljoner nervceller dör per minut."},
+{s:5,n:"Stroke",p:"SAB — vanligaste orsak, symtom, komplikation, diagnostik.",a:"Orsak: aneurysmruptur. Symtom: åskknallshuvudvärk (maximal inom sekunder), kräkningar. Komplikation: vasospasm dag 4–10. Diagnostik: CT + LP (om CT negativ)."},
+
+{s:6,n:"MS",p:"Vad händer patofysiologiskt vid MS?",a:"Autoimmunt angrepp på myelin i CNS (oligodendrocyter). Demyelinisering → fördröjd/blockerad signalöverföring. Lesioner kan sitta var som helst i CNS → symtom 'disseminerade i tid och rum'."},
+{s:6,n:"MS",p:"Debutsymtom vid MS — nämn minst 4.",a:"Opticusneurit (vanligast), sensoriska symtom (domningar/stickningar), motoriska (pares), ataxi/gångstörning, Lhermittes tecken, yrsel, fatigue, blåsstörning. <em>Tentafråga!</em>"},
+{s:6,n:"MS",p:"Skov kontra pseudoskov (Uhthoffs fenomen) — skillnad.",a:"<strong>Skov:</strong> ny inflammation ≥24h, kräver ev. metylprednisolon. <strong>Pseudoskov:</strong> gamla symtom återkommer pga. yttre faktorer (feber, värme, infektion). Ingen ny sjukdomsaktivitet → ändra inte behandling."},
+{s:6,n:"MS",p:"Ska MS-patienter träna?",a:"Ja! Både uthållighets- och styrketräning rekommenderas. Förbättrar kondition, styrka, fatigue, livskvalitet. Försiktighet under pågående skov. Vid pseudoskov: undvik överhettning."},
+
+{s:7,n:"PNP",p:"Vanligaste symtomutbredningen vid PNP — 2 nyckelord. <span class='hint'>(Tentafråga!)</span>",a:"<strong>Diffus, symmetrisk, distalt mest uttalad</strong> ('strumpa-handske'). Fötterna drabbas före händerna — längsta nervfibrerna mest sårbara."},
+{s:7,n:"PNP",p:"GBS — mekanism, allvarliga komplikationer, behandling.",a:"Akut autoimmun demyeliniserande PNP (molekylär mimikry efter infektion, ofta Campylobacter). Stigande symmetrisk slapp svaghet. <strong>15–30% behöver respirator.</strong> Behandling: IVIg eller plasmaferes. <strong>Kortikosteroider hjälper INTE.</strong>"},
+{s:7,n:"PNP",p:"GBS — LP-fynd (efter 1 vecka)?",a:"Förhöjd albuminkvot UTAN pleocytos = <strong>albuminocytologisk dissociation</strong>. Om pleocytos → tänk virusinfektion istället."},
+
+{s:8,n:"Epilepsi",p:"Epilepsi — definition (krav för diagnos).",a:"Hjärnsjukdom med upprepade <strong>oprovocerade</strong> anfall. Diagnos: typiskt ≥2 oprovocerade anfall. Anfall vid provokation (feber, abstinens, hypoglykemi) = akutsymtomatiska, inte epilepsi."},
+{s:8,n:"Epilepsi",p:"Fokala anfall — varför varierar symtomen? <span class='hint'>(Tentafråga!)</span>",a:"Startar i en avgränsad del av hjärnan. Symtomen avslöjar <em>vilken</em> del: motorisk cortex → ryckningar, sensorisk → stickningar, temporallob → medvetandepåverkan. Alla uttryck möjliga."},
+{s:8,n:"Epilepsi",p:"Status epilepticus — definition, risker, behandling.",a:"Tonisk-kloniskt anfall >5 min, eller upprepade anfall utan medvetandeåterkomst. Mortalitet ~20%. Risk efter 30 min: hypoxi, acidos, arytmi, hjärnödem. Behandling: bensodiazepiner → andralinje → IVA."},
+{s:8,n:"Epilepsi",p:"Todds pares — vad och varför viktigt?",a:"Övergående svaghet efter epileptiskt anfall. Liknar stroke men är <strong>postiktal</strong> och går tillbaka (typiskt <72h). Viktigt: inte missta för ny stroke."},
+
+{s:9,n:"Ryggmärgsskada",p:"Brown-Séquards syndrom — tre bortfall och sidolokalisation. <span class='hint'>(Tentafråga!)</span>",a:"Halvsidig lesion: (1) <strong>Ipsilateral</strong> motoriskt bortfall (pyramidbanan korsat ovan). (2) <strong>Ipsilateral</strong> beröring/proprioception/vibration (baksträngar korsar i hjärnstammen). (3) <strong>Kontralateral</strong> smärta/temperatur (spinothalamicus korsar segmentellt)."},
+{s:9,n:"Ryggmärgsskada",p:"Central cord-syndrom — mekanism och klinik.",a:"Skada centralt i ryggmärgen vid hyperextension (äldre med cervikal stenos). <strong>Armar drabbas mer än ben</strong> — cervikala motoriska fibrer ligger centralt i pyramidbanan. Vanligaste inkompletta syndromet."},
+{s:9,n:"Ryggmärgsskada",p:"SPINE-minnesregeln — cauda equina.",a:"<strong>S</strong>addle anesthesia, <strong>P</strong>ain, <strong>I</strong>ncontinence, <strong>N</strong>umbness, <strong>E</strong>mergency. Skada nedanför konus medullaris → <strong>perifer (slapp) pares</strong>, ingen spasticitet."},
+{s:9,n:"Ryggmärgsskada",p:"AIS A–E — vad innebär varje grad?",a:"<strong>A:</strong> komplett (ingen funktion S4–S5). <strong>B:</strong> inkomplett, sensorik bevarad, ingen motorik. <strong>C:</strong> motorik bevarad, MRC <3. <strong>D:</strong> motorik ≥3. <strong>E:</strong> normal."},
+{s:9,n:"Ryggmärgsskada",p:"Skada ovan C3 → ? Diafragma innerveras av?",a:"Skada ovan C3 → respiratorberoende. Diafragma = n. phrenicus (C3–C5). Skada C3–C5 → partiellt bevarad diafragma. Skada nedanför Th6 → bevarad diafragma men nedsatt hostkraft (bukmuskler Th6–L1)."},
+{s:9,n:"Ryggmärgsskada",p:"Spinal chock vs neurogen chock — skilj åt.",a:"<strong>Neurogen chock:</strong> förlorat sympatikuspåslag → hypotension + bradykardi (kräver skada ≥T6). <strong>Spinal chock:</strong> total reflexförlust → slapp pares, areflexi. Upphör vid reflexåterkomst (dagar–veckor)."},
+{s:9,n:"Ryggmärgsskada",p:"Autonom dysreflexi — skada ovan?, trigger, åtgärd.",a:"Skada ovan <strong>T6</strong>. Stimulus nedanför skadenivån (vanligast: full blåsa) → okontrollerad sympatisk vasokonstriktion → svår hypertension, bradykardi, svettning ovanför. Åtgärd: sitt upp, lossa kläder, <strong>kontrollera blåsan först</strong>."},
+
+{s:10,n:"ALS",p:"Varför är ALS unik? Fyra vanliga statusfynd. <span class='hint'>(Tentafråga!)</span>",a:"Drabbar <strong>både ÖMN och NMN</strong>: (1) atrofi + (2) fascikulationer (NMN) + (3) stegrade reflexer + (4) positivt Babinski (ÖMN). Blandad bild = nyckeln. <strong>Ingen känselnedsättning.</strong>"},
+{s:10,n:"ALS",p:"ALS och andning — varför inte syrgas utan ventilatorstöd?",a:"Andningsmuskulaturen sviktar → hypoventilation → CO₂-retention. Patienten blir beroende av hypoxisk drive. Syrgas utan ventilatorstöd undertrycker drivet → <strong>CO₂-narkos</strong> → livshotande. Behandling: NIV."},
+
+{s:11,n:"Parkinson",p:"Tre kardinalsymtom vid Parkinson. <span class='hint'>(Tentafråga!)</span>",a:"<strong>Bradykinesi</strong> (kärnsymtom, krävs för diagnos) + minst 1 av: <strong>vilotremor</strong> ('pill-rolling', avtar vid rörelse) eller <strong>rigiditet</strong> (blyrörsfenomen, hastighetsoberoende)."},
+{s:11,n:"Parkinson",p:"Prodromala symtom vid Parkinson — ge minst 4.",a:"REM sleep behavior disorder, depression/ångest, nedsatt luktsinne, förstoppning, ortostatisk hypotension. Kan föregå motoriska symtom med ~10 år."},
+{s:11,n:"Parkinson",p:"Freezing of gait — vad + cueingstrategier.",a:"Fötterna 'fryser' vid gånginitiering (typiskt i dörröppningar, trånga utrymmen). <strong>Cues:</strong> visuella (streck på golvet, laserpointer) eller auditiva (metronomrytm). Automatiska rörelsekretsar drabbas mer än målinriktade."},
+
+{s:12,n:"Huvudvärk",p:"Röda flaggor vid huvudvärk — nämn minst 4. <span class='hint'>(Tentafråga — nämn 2!)</span>",a:"Åskknallshuvudvärk (SAB!), nytillkommen hos äldre (>50 år), fokalneurologiska symtom, feber + nackstyvhet (meningit), Valsalva-förvärring, morgonhuvudvärk + kräkningar (ökat ICP), progressiv förvärring."},
+{s:12,n:"Huvudvärk",p:"Migränprovocerande faktorer — nämn minst 4. <span class='hint'>(Tentafråga!)</span>",a:"Stress (och avslappning efter stress), sömnförändring, hormonella förändringar, alkohol, kost (choklad, ost, koffein, fasta), sensorisk stimulering, väderomslag. Gemensamt: <strong>skiftningar i homeostas</strong>."},
+{s:12,n:"Huvudvärk",p:"MOH — när ska du som FT misstänka det?",a:"Huvudvärk ≥15 dagar/mån + regelbundet analgetikaintag ≥3 månader. Tröskel: triptaner/opioider ≥10 dagar/mån, vanliga analgetika ≥15 dagar/mån. Behandling: utsättning (1–2 v förvärring) + profylax."},
+
+{s:13,n:"Yrsel",p:"Posturala systemets tre delar. <span class='hint'>(Tentafråga!)</span>",a:"(1) <strong>Syn</strong> (visuell referensram). (2) <strong>Vestibulära systemet</strong> (båggångar + otoliter). (3) <strong>Proprioception</strong> (leder, muskler, fotsulan). Om en sviktar kan de andra kompensera."},
+{s:13,n:"Yrsel",p:"BPPV — mekanism, episodlängd, test, behandling.",a:"Otolitkristaller i en båggång → kort (~30–60 sek) yrselattack vid lägesändring, med adaptation. <strong>Test:</strong> Dix-Hallpike. <strong>Behandling:</strong> Epleys repositioneringsmanöver."},
+{s:13,n:"Yrsel",p:"Ménières sjukdom — triaden + attacklängd.",a:"Yrsel + tinnitus + hörselnedsättning + tryckkänsla i örat. Attacker 1–8 timmar. Jfr BPPV (sekunder), vestibularisneurit (dagar)."},
+
+{s:14,n:"Myopati",p:"Tre vanliga fynd vid myopati.",a:"(1) <strong>Proximal svaghet</strong> (svårt resa sig, gå i trappor, lyfta armar). (2) <strong>Förhöjda muskelenzymer</strong> (CK, ASAT). (3) <strong>Normal känselfunktion.</strong>"},
+{s:14,n:"Myopati",p:"Myopatisk pares vs neuropatisk pares — skillnad.",a:"<strong>Myopati:</strong> proximal svaghet, reflexer bevarade tidigt, normal känsla. <strong>Neuropati:</strong> distal svaghet, nedsatta reflexer, ofta nedsatt känsla. <strong>Central:</strong> hemipares/parapares, stegrade reflexer."},
+
+{s:15,n:"Hjärntumörer",p:"Tidsförloppet som diagnostiskt verktyg: sekunder–timmar → ?, veckor → ?",a:"Sekunder–timmar = stroke/trauma. Dagar = abscess/encefalit. <strong>Veckor = malign tumör.</strong> Månader–år = benign tumör."},
+
+{s:16,n:"Skallbenet",p:"Monro-Kellie-doktrinen + fördel/nackdel med slutet skallben. <span class='hint'>(Tentafråga!)</span>",a:"Intrakraniell volym = hjärnvävnad + blod + likvor (konstant). <strong>Fördel:</strong> utmärkt mekaniskt skydd. <strong>Nackdel:</strong> vid blödning/tumör/ödem → ICP stiger → inklämning (hjärnstam pressas genom foramen magnum → medvetslöshet → andningsstopp)."},
+
+{s:17,n:"LP",p:"Var sätts LP-nålen, och varför just där? <span class='hint'>(Tentafråga!)</span>",a:"L3–L4. Ryggmärgen slutar vid konus medullaris (L1–L2). Nedanför finns bara cauda equina (nervrötter i likvor). Nålen passerar mellan rötterna → minimal skaderisk. Indikationer: meningit, SAB, MS, GBS, normaltryckshydrocefalus."},
+{s:1,n:"Grundbegrepp",p:"Glasgow Coma Scale (GCS) — vad mäter den, vilka komponenter? <span class='hint'>(Tentafråga 2026!)</span>",a:"Mäter <strong>medvetandegrad</strong>. Tre delkomponenter: ögonöppning (1–4), verbalt svar (1–5), motoriskt svar (1–6). Total: 3 (djup medvetslöshet) – 15 (fullt vaken). Används vid akut bedömning (trauma, stroke, intoxikation)."},
+{s:1,n:"Grundbegrepp",p:"Definiera: ataxi, dysartri, allodyni. <span class='hint'>(Tentafråga 2026 — matcha term med beskrivning!)</span>",a:"<strong>Ataxi/dystaxi:</strong> koordinationsrubbning. <strong>Dysartri:</strong> artikulationsrubbning (sluddrigt tal pga. svaghet i talmuskulaturen — språkförståelse intakt). <strong>Allodyni:</strong> smärta från retningar som normalt inte ger smärta."},
+{s:1,n:"Grundbegrepp",p:"Blyrörsfenomen — spasticitet eller rigiditet? <span class='hint'>(Tentafråga 2026!)</span>",a:"<strong>Rigiditet</strong> — hastighetsoberoende, jämnt motstånd (Parkinson). INTE spasticitet. Spasticitet = hastighetsberoende, fällknivsfenomen (central skada). Tentafrågan: 'blyrörsfenomen, trög i hela rörelsen' passar INTE in under spasticitet."},
+{s:1,n:"Grundbegrepp",p:"Nämn två retningssymtom. <span class='hint'>(Tentafråga 2026!)</span>",a:"<strong>Epileptiskt anfall</strong> och <strong>neuropatisk smärta</strong>. Andra ex: myokloni, toniska spasmer. Retningssymtom = nervceller avfyrar okontrollerat. Jfr bortfallssymtom: pares, afasi, synfältsbortfall."},
+{s:3,n:"Synbanan",p:"73-årig man, plötsligt synbortfall vänster öga, normal syn höger. Typ + skadens plats? <span class='hint'>(Tentafråga 2026!)</span>",a:"<strong>Monokulär blindhet</strong> — komplett synförlust på ett öga. Skadan sitter <strong>framför chiasma på vänster sida</strong> (vänster synnerv skadad före korsningen)."},
+{s:5,n:"Stroke",p:"Nämn de två reperfusionsmetoderna vid akut ischemisk stroke + tidsfönster. <span class='hint'>(Tentafråga 2026!)</span>",a:"(1) <strong>IV-trombolys</strong> inom 4,5 timmar. (2) <strong>Trombektomi</strong> (mekanisk kateterextraktion) inom 6–24 timmar vid stor kärlocklusion. 'Time is brain'."},
+{s:6,n:"MS",p:"MS-skov: krav på duration? Symtom under feber = skov? Bara vita substansen? <span class='hint'>(Tentafråga 2026!)</span>",a:"Skov kräver symtom <strong>≥24 timmar</strong>. Symtom under feber/bastubad = <strong>pseudoskov</strong> (Uhthoffs). Lesioner sitter i CNS — <strong>inte bara vita substansen</strong> (grå substans kan också drabbas)."},
+{s:7,n:"PNP",p:"Vanligaste orsaken till polyneuropati? <span class='hint'>(Tentafråga 2026!)</span>",a:"<strong>Diabetes</strong>. Övriga vanliga: alkohol, B12-brist, läkemedel, ärftligt (CMT)."},
+{s:9,n:"Ryggmärgsskada",p:"N. phrenicus — segment och funktion? Vad händer vid lesion ovan C4? <span class='hint'>(Tentafråga 2026!)</span>",a:"N. phrenicus = <strong>C3–C5</strong>, innerverar diafragma. Lesion ovan C4 → diafragmaförlamning → <strong>respiratorberoende</strong>, oftast letal utan intensivvård."},
+{s:11,n:"Parkinson",p:"Vilken signalsubstans brister vid Parkinson? Vilket symtom är obligatoriskt? <span class='hint'>(Tentafråga 2026!)</span>",a:"<strong>Dopamin</strong> (substantia nigra). Obligatoriskt: <strong>bradykinesi</strong> = svårt att initiera rörelse + förlångsamning + tappar amplitud vid repetition. Parkinsonism = bradykinesi + minst 1 av (vilotremor ELLER rigiditet)."},
+{s:12,n:"Huvudvärk",p:"Sjunkande östrogennivåer — migräntrigger? Sjunkande kortisonnivåer — migräntrigger? <span class='hint'>(Tentafråga 2026!)</span>",a:"Sjunkande östrogennivåer: <strong>JA</strong> (menstruation, p-pilleruppehåll). Sjunkande kortisonnivåer: <strong>NEJ</strong> — inte en erkänd trigger."},
+{s:12,n:"Huvudvärk",p:"Varför rekommenderas fysisk aktivitet vid migrän? <span class='hint'>(Tentafråga 2026!)</span>",a:"Aerob träning kan <strong>minska migränfrekvensen</strong> — effekt jämförbar med profylaktisk medicinering. Inte bara 'bra för hälsan' utan specifik migränprevention."},
+{s:14,n:"Myopati",p:"Kan muskelstorlek vara hypertrofisk, atrofisk OCH normal vid myopati? Bara ärftliga? Ingen behandling? <span class='hint'>(Tentafråga 2026!)</span>",a:"<strong>Ja</strong> — muskelstorlek varierar (hypertrofi t.ex. vaderna vid Duchenne, atrofi, normal). <strong>Inte bara ärftliga</strong> — inflammatoriska, toxiska, endokrina. <strong>Behandling finns</strong> (immunsuppression, byta läkemedel, träning)."}
+];
+
+const SECTIONS=[...new Set(C.map(c=>c.s))].sort((a,b)=>a-b);
+const SNAMES={};C.forEach(c=>SNAMES[c.s]=c.n);
+const CNUM={};
+const _sc={};C.forEach((c,i)=>{if(!_sc[c.s])_sc[c.s]=0;_sc[c.s]++;CNUM[i]=c.s+'.'+_sc[c.s]});
+
+let activeSec=null,queue=[],cur=0,ratings={},counts={knew:0,unsure:0,missed:0};
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function buildPills(){
+  const el=document.getElementById('pills');
+  let h=`<button class="pill${activeSec===null?' active':''}" onclick="filterSec(null)">Alla</button>`;
+  SECTIONS.forEach(s=>{h+=`<button class="pill${activeSec===s?' active':''}" onclick="filterSec(${s})">${s}. ${SNAMES[s]}</button>`});
+  el.innerHTML=h;
+}
+function filterSec(s){activeSec=s;buildPills();startSession()}
+
+function startSession(){
+  const pool=activeSec===null?C:C.filter(c=>c.s===activeSec);
+  queue=shuffle(pool.map(c=>C.indexOf(c)));cur=0;ratings={};counts={knew:0,unsure:0,missed:0};
+  document.getElementById('finish-area').hidden=true;document.getElementById('card-area').hidden=false;
+  renderCard();
+}
+
+function restart(mode){
+  let ids;
+  if(mode==='missed')ids=Object.keys(ratings).filter(k=>ratings[k]==='missed').map(Number);
+  else if(mode==='unsure')ids=Object.keys(ratings).filter(k=>ratings[k]==='unsure'||ratings[k]==='missed').map(Number);
+  else ids=null;
+  if(ids&&ids.length===0){startSession();return}
+  if(ids){queue=shuffle(ids);cur=0;ratings={};counts={knew:0,unsure:0,missed:0};document.getElementById('finish-area').hidden=true;document.getElementById('card-area').hidden=false;renderCard()}
+  else startSession();
+}
+
+function renderCard(){
+  if(cur>=queue.length){showFinish();return}
+  const ci=queue[cur],c=C[ci];
+  document.getElementById('card-section').innerHTML=`<span>${c.s}. ${c.n}</span><span class="card-qnum">Kort ${CNUM[ci]}</span>`;
+  document.getElementById('card-prompt').innerHTML=c.p;
+  const aa=document.getElementById('answer-area');
+  const rb=document.getElementById('reveal-btn');
+  const rr=document.getElementById('rate-row');
+  document.getElementById('prev-btn').hidden=cur===0;
+  document.getElementById('next-btn').hidden=cur>=queue.length-1;
+  if(ratings[ci]!==undefined){
+    aa.innerHTML=c.a;aa.hidden=false;rb.hidden=true;rr.hidden=true;
+  } else {
+    aa.hidden=true;rb.hidden=false;rr.hidden=true;
+  }
+  updateStats();
+}
+
+function reveal(){
+  const ci=queue[cur],c=C[ci];
+  document.getElementById('answer-area').innerHTML=c.a;
+  document.getElementById('answer-area').hidden=false;
+  document.getElementById('reveal-btn').hidden=true;
+  document.getElementById('rate-row').hidden=false;
+}
+
+function rate(r){
+  const ci=queue[cur];
+  ratings[ci]=r;counts[r]++;
+  cur++;renderCard();
+}
+
+function go(dir){cur+=dir;if(cur<0)cur=0;renderCard()}
+
+function updateStats(){
+  document.getElementById('stat-num').textContent=Math.min(cur+1,queue.length);
+  document.getElementById('stat-total').textContent=queue.length;
+  document.getElementById('s-knew').textContent=counts.knew;
+  document.getElementById('s-unsure').textContent=counts.unsure;
+  document.getElementById('s-missed').textContent=counts.missed;
+  const rated=counts.knew+counts.unsure+counts.missed;
+  const p=queue.length>0?(rated/queue.length*100):0;
+  document.getElementById('progress-fill').style.width=p+'%';
+  document.getElementById('progress-label').textContent=`${rated} / ${queue.length}`;
+}
+
+function showFinish(){
+  document.getElementById('card-area').hidden=true;
+  document.getElementById('finish-area').hidden=false;
+  const t=counts.knew+counts.unsure+counts.missed;
+  document.getElementById('final-msg').textContent=`${counts.knew} kunde, ${counts.unsure} osäkra, ${counts.missed} missade av ${t}`;
+  const ss={};
+  queue.forEach(ci=>{const c=C[ci];if(!ss[c.s])ss[c.s]={n:c.n,k:0,u:0,m:0};const r=ratings[ci];if(r==='knew')ss[c.s].k++;else if(r==='unsure')ss[c.s].u++;else ss[c.s].m++});
+  let bh='<h3>Per avsnitt</h3>';
+  Object.keys(ss).sort((a,b)=>a-b).forEach(s=>{
+    const st=ss[s];
+    bh+=`<div class="breakdown-row"><span class="breakdown-name">${s}. ${st.n}</span><div class="breakdown-counts"><span class="c-knew">${st.k}</span><span class="c-unsure">${st.u}</span><span class="c-missed">${st.m}</span></div></div>`;
+  });
+  document.getElementById('breakdown').innerHTML=bh;
+  updateStats();
+}
+
+buildPills();startSession();
+</script>
+</body>
+</html>

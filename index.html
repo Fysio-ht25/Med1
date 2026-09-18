@@ -3,599 +3,121 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Med 1 — Flashcards</title>
+<title>Fysio T3 — Tentaträning</title>
+<script>try{var t=localStorage.getItem('fysio-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
 <style>
 :root {
-  --bg: #F1F1F1;
-  --surface: #FFFFFF;
-  --text: #1A1018;
-  --text-secondary: #5A4A54;
-  --plommon-deep: #4F0433;
-  --plommon-mid: #870052;
-  --plommon-light: #EDDBE4;
-  --plommon-ghost: #F6EDF3;
-  --border: #D8CDD4;
-  --knew: #2D7D46;
-  --knew-bg: #E8F5EC;
-  --unsure: #B8860B;
-  --unsure-bg: #FFF8E1;
-  --missed: #C4382A;
-  --missed-bg: #FCEAE8;
-  --pill-bg: #E8DDE4;
-  --pill-active-bg: #4F0433;
-  --pill-active-text: #FFFFFF;
-  --progress-track: #E8DDE4;
-  --progress-fill: #870052;
+  --bg: #F1F1F1; --surface: #FFFFFF; --text: #1A1018; --text-secondary: #5A4A54;
+  --plommon-deep: #4F0433; --plommon-mid: #870052; --plommon-light: #EDDBE4; --plommon-ghost: #F6EDF3; --border: #D8CDD4;
+  --ok: #2D7D46; --track: #E8DDE4;
   --shadow: 0 1px 3px rgba(79,4,51,0.08), 0 4px 12px rgba(79,4,51,0.04);
   --font: 'DM Sans', system-ui, -apple-system, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #1A1018; --surface: #2A1F26; --text: #EDE6EA; --text-secondary: #A89BA3;
-    --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836;
-    --plommon-ghost: #2D1F28; --border: #3D2F38;
-    --knew: #5ABA74; --knew-bg: #1E2E22;
-    --unsure: #D4A843; --unsure-bg: #2E2A1A;
-    --missed: #E8695B; --missed-bg: #2E1F1E;
-    --pill-bg: #352A32; --pill-active-bg: #C27AAE; --pill-active-text: #1A1018;
-    --progress-track: #352A32; --progress-fill: #C27AAE;
-    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+    --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836; --plommon-ghost: #2D1F28; --border: #3D2F38;
+    --ok: #5ABA74; --track: #352A32; --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
   }
 }
 :root[data-theme="dark"] {
   --bg: #1A1018; --surface: #2A1F26; --text: #EDE6EA; --text-secondary: #A89BA3;
-  --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836;
-  --plommon-ghost: #2D1F28; --border: #3D2F38;
-  --knew: #5ABA74; --knew-bg: #1E2E22;
-  --unsure: #D4A843; --unsure-bg: #2E2A1A;
-  --missed: #E8695B; --missed-bg: #2E1F1E;
-  --pill-bg: #352A32; --pill-active-bg: #C27AAE; --pill-active-text: #1A1018;
-  --progress-track: #352A32; --progress-fill: #C27AAE;
-  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
+  --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836; --plommon-ghost: #2D1F28; --border: #3D2F38;
+  --ok: #5ABA74; --track: #352A32; --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; }
-.app { max-width: 660px; margin: 0 auto; padding: 20px 16px 100px; }
-
-.header { margin-bottom: 24px; }
-.header h1 { font-size: 22px; font-weight: 700; color: var(--plommon-deep); margin-bottom: 2px; }
-.header p { font-size: 13px; color: var(--text-secondary); }
-.header .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-style: italic; }
-
-.stats { display: flex; gap: 12px; margin-bottom: 20px; font-size: 13px; color: var(--text-secondary); font-variant-numeric: tabular-nums; flex-wrap: wrap; }
-.stats strong { font-weight: 700; }
-.s-knew strong { color: var(--knew); }
-.s-unsure strong { color: var(--unsure); }
-.s-missed strong { color: var(--missed); }
-
-.pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
-.pill {
-  font-family: var(--font); font-size: 12px; font-weight: 500; padding: 5px 12px;
-  border-radius: 100px; border: 1px solid var(--border); background: var(--pill-bg);
-  color: var(--text-secondary); cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.pill:hover { border-color: var(--plommon-mid); color: var(--text); }
-.pill.active { background: var(--pill-active-bg); color: var(--pill-active-text); border-color: transparent; }
-
-.card {
-  background: var(--surface); border-radius: 10px; padding: 28px 24px;
-  box-shadow: var(--shadow); margin-bottom: 16px;
-}
-.card-section {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
-  text-transform: uppercase; color: var(--plommon-mid); margin-bottom: 14px;
-  display: flex; justify-content: space-between; align-items: baseline;
-}
-.card-qnum {
-  font-size: 20px; font-weight: 700; color: var(--plommon-deep); letter-spacing: 0;
-  text-transform: none;
-}
-.card-prompt {
-  font-size: 17px; font-weight: 500; line-height: 1.5; text-wrap: balance;
-}
-.card-prompt .hint { font-size: 14px; color: var(--text-secondary); font-weight: 400; }
-
-.reveal-btn {
-  font-family: var(--font); font-size: 15px; font-weight: 500; padding: 14px 24px;
-  border-radius: 8px; border: 2px dashed var(--border); background: var(--plommon-ghost);
-  color: var(--plommon-mid); cursor: pointer; width: 100%; margin-top: 20px;
-  transition: all 0.15s;
-}
-.reveal-btn:hover { border-color: var(--plommon-mid); background: var(--plommon-light); }
-
-.answer-area { margin-top: 20px; padding: 16px; border-radius: 8px; background: var(--plommon-ghost); border: 1px solid var(--plommon-light); font-size: 14px; line-height: 1.7; }
-
-.rate-row { display: flex; gap: 8px; margin-top: 16px; }
-.rate-btn {
-  font-family: var(--font); font-size: 14px; font-weight: 700; padding: 10px 0;
-  border-radius: 8px; border: 2px solid var(--border); background: var(--surface);
-  cursor: pointer; flex: 1; transition: all 0.12s; text-align: center;
-}
-.rate-btn:hover { transform: translateY(-1px); }
-.rate-btn.knew { color: var(--knew); border-color: var(--knew); }
-.rate-btn.knew:hover { background: var(--knew-bg); }
-.rate-btn.unsure { color: var(--unsure); border-color: var(--unsure); }
-.rate-btn.unsure:hover { background: var(--unsure-bg); }
-.rate-btn.missed { color: var(--missed); border-color: var(--missed); }
-.rate-btn.missed:hover { background: var(--missed-bg); }
-
-.nav-row { display: flex; gap: 10px; margin-top: 16px; }
-.nav-btn {
-  font-family: var(--font); font-size: 14px; font-weight: 700; padding: 10px 20px;
-  border-radius: 8px; border: none; cursor: pointer; transition: background 0.15s;
-}
-.nav-btn.secondary { background: transparent; color: var(--plommon-deep); border: 2px solid var(--border); }
-.nav-btn.secondary:hover { border-color: var(--plommon-mid); color: var(--plommon-mid); }
-
-.progress-wrap {
-  position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
-  border-top: 1px solid var(--border); padding: 12px 16px; z-index: 10;
-}
-.progress-inner { max-width: 660px; margin: 0 auto; }
-.progress-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
-.progress-track { height: 6px; border-radius: 3px; background: var(--progress-track); overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 3px; background: var(--progress-fill); transition: width 0.3s ease; }
-
-.finish { text-align: center; padding: 48px 24px; }
-.finish h2 { font-size: 24px; font-weight: 700; color: var(--plommon-deep); margin-bottom: 16px; }
-.finish p { font-size: 15px; color: var(--text-secondary); margin-bottom: 24px; }
-.restart-btn {
-  font-family: var(--font); font-size: 15px; font-weight: 700; padding: 12px 32px;
-  border-radius: 8px; border: 2px solid var(--plommon-deep); background: transparent;
-  color: var(--plommon-deep); cursor: pointer; margin: 6px; transition: all 0.15s;
-}
-.restart-btn:hover { background: var(--plommon-ghost); }
-.restart-btn.primary { background: var(--plommon-deep); color: #fff; border-color: var(--plommon-deep); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .restart-btn.primary { color: #1A1018; } }
-:root[data-theme="dark"] .restart-btn.primary { color: #1A1018; }
-
-.breakdown { text-align: left; margin: 24px 0; }
-.breakdown h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
-.breakdown-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.breakdown-row:last-child { border-bottom: none; }
-.breakdown-name { flex: 1; }
-.breakdown-counts { display: flex; gap: 8px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.breakdown-counts span { min-width: 20px; text-align: center; }
-.c-knew { color: var(--knew); }
-.c-unsure { color: var(--unsure); }
-.c-missed { color: var(--missed); }
-
-.save-row { display: flex; justify-content: center; margin-top: 12px; }
-.save-btn {
-  font-family: var(--font); font-size: 12px; font-weight: 500; padding: 6px 16px;
-  border-radius: 6px; border: 1px solid var(--border); background: var(--surface);
-  color: var(--text-secondary); cursor: pointer; transition: all 0.15s;
-}
-.save-btn:hover { border-color: var(--plommon-mid); color: var(--plommon-mid); }
-
-.mode-row { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
-.mode-label { font-size: 12px; color: var(--text-secondary); margin-right: 4px; white-space: nowrap; }
-.mode-btn {
-  font-family: var(--font); font-size: 12px; font-weight: 500; padding: 5px 12px;
-  border-radius: 100px; border: 1px solid var(--border); background: var(--pill-bg);
-  color: var(--text-secondary); cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.mode-btn:hover { border-color: var(--plommon-mid); color: var(--text); }
-.mode-btn.active { background: var(--pill-active-bg); color: var(--pill-active-text); border-color: transparent; }
-.browse-btn {
-  font-family: var(--font); font-size: 12px; font-weight: 500; padding: 5px 12px;
-  border-radius: 100px; border: 1px dashed var(--border); background: transparent;
-  color: var(--text-secondary); cursor: pointer; transition: all 0.15s; margin-left: auto; white-space: nowrap;
-}
-.browse-btn:hover { border-color: var(--plommon-mid); color: var(--plommon-mid); }
-
-.index-overlay {
-  position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.4);
-  display: flex; align-items: flex-end; justify-content: center;
-}
-.index-panel {
-  background: var(--surface); border-radius: 12px 12px 0 0; width: 100%; max-width: 660px;
-  max-height: 70vh; display: flex; flex-direction: column; box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
-}
-.index-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 20px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-}
-.index-header h3 { font-size: 15px; font-weight: 700; color: var(--plommon-deep); }
-.index-close {
-  font-family: var(--font); font-size: 22px; background: none; border: none;
-  color: var(--text-secondary); cursor: pointer; padding: 0 4px; line-height: 1;
-}
-.index-close:hover { color: var(--text); }
-.index-search {
-  margin: 12px 20px 0; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
-  background: var(--bg); color: var(--text); font-family: var(--font); font-size: 13px; width: calc(100% - 40px);
-}
-.index-search::placeholder { color: var(--text-secondary); }
-.index-body { overflow-y: auto; padding: 8px 20px 20px; flex: 1; }
-.index-group-label {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-  color: var(--plommon-mid); padding: 12px 0 6px; position: sticky; top: 0; background: var(--surface);
-}
-.index-item {
-  display: flex; align-items: baseline; gap: 10px; padding: 8px 6px; border-radius: 6px;
-  cursor: pointer; font-size: 13px; line-height: 1.45; transition: background 0.1s;
-}
-.index-item:hover { background: var(--plommon-ghost); }
-.index-item-num {
-  font-weight: 700; color: var(--plommon-deep); min-width: 24px; font-variant-numeric: tabular-nums;
-}
-.index-item-q { color: var(--text); flex: 1; }
-.index-item-badge {
-  font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; flex-shrink: 0;
-}
-.index-item-badge.knew { color: var(--knew); background: var(--knew-bg); }
-.index-item-badge.unsure { color: var(--unsure); background: var(--unsure-bg); }
-.index-item-badge.missed { color: var(--missed); background: var(--missed-bg); }
-
-[hidden] { display: none !important; }
-@media (max-width: 480px) { .card { padding: 20px 16px; } .card-prompt { font-size: 16px; } .rate-btn { font-size: 13px; padding: 8px 0; } }
+.app { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+.topbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.theme-btn { font-family: var(--font); font-size: 12px; padding: 4px 10px; border-radius: 100px; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; }
+h1 { font-size: 26px; font-weight: 700; color: var(--plommon-deep); line-height: 1.2; }
+.lead { font-size: 14px; color: var(--text-secondary); margin: 6px 0 28px; }
+.exam { margin-bottom: 30px; }
+.exam-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
+.exam h2 { font-size: 18px; font-weight: 700; color: var(--plommon-deep); }
+.exam .tag { font-size: 12px; color: var(--text-secondary); }
+.exam .desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+.tile { display: block; text-decoration: none; color: inherit; background: var(--surface); border-radius: 10px; padding: 18px; box-shadow: var(--shadow); border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s; }
+.tile:hover { border-color: var(--plommon-mid); transform: translateY(-1px); }
+.tile .kind { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--plommon-mid); }
+.tile h3 { font-size: 17px; font-weight: 700; margin: 2px 0 4px; color: var(--text); }
+.tile p { font-size: 13px; color: var(--text-secondary); }
+.prog { margin-top: 12px; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.bar { height: 5px; border-radius: 3px; background: var(--track); overflow: hidden; margin-top: 5px; }
+.bar div { height: 100%; background: var(--plommon-mid); }
+.weights { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.w { font-size: 11px; padding: 3px 9px; border-radius: 100px; background: var(--plommon-ghost); border: 1px solid var(--plommon-light); color: var(--text-secondary); }
+.w strong { color: var(--plommon-deep); }
+.foot { font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 14px; }
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="header">
-    <h1>Med 1 — Flashcards</h1>
-    <p>Tänk efter, vänd kortet, betygsätt dig själv</p>
-    <div class="sub">Kirurgi · Ortopedi · Allmän medicin · Reumatologi · Gynekologi — 102 kort (Canvas + Tenta 2026)</div>
-  </div>
-  <div class="stats">
-    <span>Kort <strong id="stat-num">1</strong> / <strong id="stat-total">0</strong></span>
-    <span class="s-knew">Kunde: <strong id="s-knew">0</strong></span>
-    <span class="s-unsure">Osäker: <strong id="s-unsure">0</strong></span>
-    <span class="s-missed">Missade: <strong id="s-missed">0</strong></span>
-  </div>
-  <div class="pills" id="pills"></div>
-  <div class="mode-row">
-    <span class="mode-label">Ordning:</span>
-    <button class="mode-btn active" id="mode-shuffle" onclick="setMode('shuffle')">Slumpad</button>
-    <button class="mode-btn" id="mode-seq" onclick="setMode('seq')">I ordning</button>
-    <button class="browse-btn" onclick="openIndex()">Bläddra kort</button>
-  </div>
-  <div id="card-area">
-    <div class="card" id="card">
-      <div class="card-section" id="card-section"></div>
-      <div class="card-prompt" id="card-prompt"></div>
-      <button class="reveal-btn" id="reveal-btn" onclick="reveal()">Visa svar</button>
-      <div class="answer-area" id="answer-area" hidden></div>
-      <div class="rate-row" id="rate-row" hidden>
-        <button class="rate-btn knew" onclick="rate('knew')">Kunde</button>
-        <button class="rate-btn unsure" onclick="rate('unsure')">Osäker</button>
-        <button class="rate-btn missed" onclick="rate('missed')">Missade</button>
-      </div>
-      <div class="nav-row" id="nav-row">
-        <button class="nav-btn secondary" id="prev-btn" onclick="go(-1)">&#8592; Föregående</button>
-        <button class="nav-btn secondary" id="next-btn" onclick="go(1)" style="margin-left:auto">Hoppa över &#8594;</button>
-      </div>
+  <div class="topbar"><button class="theme-btn" id="theme-btn" onclick="cycleTheme()"></button></div>
+  <h1>Tentaträning — Medicinska ämnen 1</h1>
+  <p class="lead">Quiz för att testa dig, flashcards för att repetera. Ditt resultat sparas i webbläsaren på den här enheten.</p>
+
+  <section class="exam">
+    <div class="exam-head"><h2>Stora tentan</h2><span class="tag">Kirurgi · Ortopedi · Medicin · Reumatologi · Gynekologi</span></div>
+    <div class="weights">
+      <span class="w">Ortopedi <strong>16 p</strong></span><span class="w">Kirurgi <strong>10 p</strong></span><span class="w">Medicin <strong>10 p</strong></span><span class="w">Reumatologi <strong>8 p</strong></span><span class="w">Gynekologi <strong>5 p</strong></span>
     </div>
-  </div>
-  <div id="finish-area" hidden>
-    <div class="card finish">
-      <h2>Genomgång klar!</h2>
-      <p id="final-msg"></p>
-      <div class="breakdown" id="breakdown"></div>
-      <button class="restart-btn primary" onclick="restart('all')">Kör alla igen</button>
-      <button class="restart-btn" onclick="restart('unsure')">Osäkra + missade</button>
-      <button class="restart-btn" onclick="restart('missed')">Bara missade</button>
-      <div class="save-row"><button class="save-btn" onclick="saveProgress()">Spara resultat</button></div>
+    <div class="grid">
+      <a class="tile" href="med1-quiz.html">
+        <div class="kind">Quiz</div>
+        <h3>Flervalsfrågor</h3>
+        <p>166 frågor på tentanivå, grupperade efter ämne och område, med förklaring till varje svar.</p>
+        <div class="prog" id="p-mq"></div>
+      </a>
+      <a class="tile" href="med1-flashcards.html">
+        <div class="kind">Flashcards</div>
+        <h3>Repetitionskort</h3>
+        <p>102 kort. Tänk efter, vänd kortet och betygsätt dig själv.</p>
+        <div class="prog" id="p-mf"></div>
+      </a>
     </div>
-  </div>
-</div>
-<div id="index-overlay" class="index-overlay" hidden onclick="closeIndex(event)">
-  <div class="index-panel" onclick="event.stopPropagation()">
-    <div class="index-header">
-      <h3>Alla kort</h3>
-      <button class="index-close" onclick="closeIndex()">&times;</button>
+  </section>
+
+  <section class="exam">
+    <div class="exam-head"><h2>Neurologi</h2><span class="tag">Egen tenta</span></div>
+    <div class="grid">
+      <a class="tile" href="neuro-quiz.html">
+        <div class="kind">Quiz</div>
+        <h3>Flervalsfrågor</h3>
+        <p>75 frågor med förklaringar.</p>
+      </a>
+      <a class="tile" href="neuro-flashcards.html">
+        <div class="kind">Flashcards</div>
+        <h3>Repetitionskort</h3>
+        <p>70 kort.</p>
+      </a>
     </div>
-    <input class="index-search" id="index-search" type="text" placeholder="Sök kort..." oninput="renderIndex()">
-    <div class="index-body" id="index-body"></div>
-  </div>
-</div>
-<div class="progress-wrap">
-  <div class="progress-inner">
-    <div class="progress-label" id="progress-label">0 / 0</div>
-    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-  </div>
+  </section>
+
+  <p class="foot">Innehållet bygger på kursens föreläsningar, lärandemål och exempeltentor. Det ersätter inte kurslitteraturen.</p>
 </div>
 <script>
-const C=[
-// ===== KIRURGI =====
-{s:"KIR",n:"Kirurgi",p:"Var sitter spetsen på en CVK (central venkateter)?",a:"Övergången mellan <strong>vena cava superior och höger förmak</strong>."},
-{s:"KIR",n:"Kirurgi",p:"Vad betyder urinretention och hur behandlas det?",a:"<strong>Överfyllnad av blåsan</strong> — kan inte tömmas. Behandling: <strong>urinkateter</strong>."},
-{s:"KIR",n:"Kirurgi",p:"I vilken ordning ska man undersöka och behandla vid trauma?",a:"<strong>ABCDE:</strong> Airway → Breathing → Circulation → Disability → Exposure."},
-{s:"KIR",n:"Kirurgi",p:"Vad är FRC, och hur ändras den från liggande till sittande?",a:"FRC = luftvolymen kvar efter <strong>normal utandning</strong> (inte maximal). FRC <strong>ökar</strong> från liggande till sittande."},
-{s:"KIR",n:"Kirurgi",p:"Sekundära orsaker till lymfödem?",a:"<strong>Operation, strålbehandling, hudinfektion</strong>."},
-{s:"KIR",n:"Kirurgi",p:"Vilka tre mål vill man uppnå med generell anestesi?",a:"(1) <strong>Medvetslöshet</strong>. (2) <strong>Smärtfrihet</strong>. (3) <strong>Muskelavslappning</strong>."},
-{s:"KIR",n:"Kirurgi",p:"Vad är en lambå (flap)?",a:"Vävnad som <strong>flyttas med bevarad blodcirkulation</strong> för att täcka en defekt. Viktigast för lyckad operation: adekvat blodcirkulation."},
-{s:"KIR",n:"Kirurgi",p:"Vanligaste cancerformen hos man respektive kvinna i Sverige?",a:"Man: <strong>prostatacancer</strong>. Kvinna: <strong>bröstcancer</strong>."},
-{s:"KIR",n:"Kirurgi",p:"Laparoskopi vs laparotomi — tre nyckelfördelar?",a:"Laparoskopi: (1) <strong>mindre hudsnitt</strong>, (2) <strong>mindre postop smärta</strong>, (3) <strong>snabbare återhämtning</strong>. Laparoskopi = titthålskirurgi. Laparotomi = öppet snitt."},
-{s:"KIR",n:"Kirurgi",p:"Skillnad delhudstransplantat (STSG) vs fullhudstransplantat (FTSG)?",a:"<strong>STSG:</strong> epidermis + del av dermis. <strong>FTSG:</strong> epidermis + hela dermis, bättre kosmetik."},
-{s:"KIR",n:"Kirurgi",p:"Hur länge ska patienten fasta före planerad bukkirurgi?",a:"<strong>6 timmar</strong> fast föda, <strong>2 timmar</strong> klara drycker. Minskar aspirationsrisk."},
-{s:"KIR",n:"Kirurgi",p:"Tre postoperativa lungkomplikationer efter öppen bukkirurgi?",a:"(1) <strong>Atelektaser</strong>. (2) <strong>Pneumoni</strong>. (3) <strong>Andningsinsufficiens</strong>."},
-{s:"KIR",n:"Kirurgi",p:"Viktigaste FT-insatsen för att förebygga postop lungkomplikationer?",a:"<strong>Tidig mobilisering.</strong> Ökar FRC och mobiliserar sekret."},
-{s:"KIR",n:"Kirurgi",p:"Bilateral bensvullnad, pitting, andfåddhet — diagnos?",a:"<strong>Hjärtsvikt</strong> (kardiellt ödem). Bilateral + pittande + andfåddhet. Behandling: diuretika."},
-{s:"KIR",n:"Kirurgi",p:"Ensidig bensvullnad, Stemmers tecken, hudförtjockning — diagnos?",a:"<strong>Lymfödem.</strong> Behandling: <strong>kompression</strong>. Inte diuretika, inte vila."},
-{s:"KIR",n:"Kirurgi",p:"Varför ska en nylagd trakeostomikanyl (<3 veckor) som åkt ut inte återinsättas?",a:"Kanalen inte stabiliserad → risk för <strong>falsk väg</strong>. Ventilera via mun/näsa och larma."},
-{s:"KIR",n:"Kirurgi",p:"Gångträning vid claudicatio intermittens — rekommendation?",a:"Handledd gångträning ≥3 ggr/vecka, ≥30 min, ≥6 månader. Gå till smärtgräns, vila, fortsätt."},
-{s:"KIR",n:"Kirurgi",p:"ERAS-konceptet — FT:s roll?",a:"Enhanced Recovery After Surgery. <strong>FT:s roll:</strong> preop information, tidig mobilisering (dag 0–1), andningsvård."},
-{s:"KIR",n:"Kirurgi",p:"Riskfaktorer för postop lungkomplikationer?",a:"Låg kondition, nedsatt lungfunktion, öppen thorax-/bukkirurgi, lång op-tid, rökning, hög ålder."},
-{s:"KIR",n:"Kirurgi",p:"Varför ska hematuri alltid utredas?",a:"Kan vara <strong>första tecknet på cancer</strong> i urinvägarna."},
-{s:"KIR",n:"Kirurgi",p:"Rekonstruktionsstegen — princip?",a:"Från enklast till mest avancerat: (1) sutur → (2) sekundärläkning → (3) hudtransplantat → (4–6) lambåer. <strong>Välj enklaste metod som ger bra resultat.</strong>"},
-
-// ===== ORTOPEDI =====
-{s:"ORT",n:"Ortopedi",p:"72-årig man, ljumsksmärta, morgonstelhet, inskränkt inåtrotation/extension höger höft. Troligaste diagnos?",a:"<strong>Höftartros (coxartros).</strong> Typisk triad: ljumsksmärta + morgonstelhet + inskränkt inåtrotation/extension."},
-{s:"ORT",n:"Ortopedi",p:"Förstahandsbehandling vid höft-/knäartros?",a:"<strong>Artrosskola</strong> — patientutbildning + individuellt träningsprogram + viktnedgång vid behov. Inte läkemedel, inte artroskopi, inte protes."},
-{s:"ORT",n:"Ortopedi",p:"Vad ingår i artrosskola?",a:"Information om artros, råd om egenvård, <strong>individuellt utprovat träningsprogram</strong> med handledning. Inte samma sak som FAR."},
-{s:"ORT",n:"Ortopedi",p:"Vilken indikation krävs för ledprotesoperation?",a:"<strong>Smärta + nedsatt livskvalitet</strong> trots konservativ behandling. Röntgenfynd allena räcker inte."},
-{s:"ORT",n:"Ortopedi",p:"Högenergiskada — vad innebär det?",a:"Skador vid stort våld: trafikolycka >30 km/h, fall från höjd, klämskadar."},
-{s:"ORT",n:"Ortopedi",p:"Patientens fot ser blek ut efter högenergiskada — vad misstänks?",a:"<strong>Kärlskada</strong> tills motsatsen bevisats. Blek fot = nedsatt blodförsörjning (inte nervskada)."},
-{s:"ORT",n:"Ortopedi",p:"Hur lång tid tar det för en fotledsfraktur att läka?",a:"<strong>6–8 veckor.</strong>"},
-{s:"ORT",n:"Ortopedi",p:"Behandling av dislocerad bimalleolär fotledsfraktur?",a:"<strong>Operation + gips.</strong> Enbart gips räcker inte vid dislokation."},
-{s:"ORT",n:"Ortopedi",p:"Vilken komplikation är INTE allmän vid multitrauma? <span class='hint'>(Förlust av ben-/muskelmassa, lungemboli, tarmvred, DVT)</span>",a:"<strong>Tarmvred (ileus)</strong> — inte allmän vid multitrauma. Muskelatrofi, LE och DVT är klassiska komplikationer."},
-{s:"ORT",n:"Ortopedi",p:"Callusläkning — vad är det?",a:"Läkning vid icke-opererade frakturer: hematom → <strong>mjuk kallus</strong> (brosk) → <strong>hård kallus</strong> (ben) → remodellering."},
-{s:"ORT",n:"Ortopedi",p:"Vilket är INTE en röd flagga vid ryggsmärta? <span class='hint'>(Tablettbehandlad hypertoni, ålder >50, vilosmärta, SR >40, viktminskning)</span>",a:"<strong>Tablettbehandlad hypertoni</strong> — inget samband med allvarlig ryggsjukdom. Tentafälla!"},
-{s:"ORT",n:"Ortopedi",p:"Axelluxation, kan inte dorsalflektera handleden dag 2. Vilken nervskada?",a:"<strong>N. radialis</strong> → dropphand. Skidtumme = UCL-skada, inte associerad med axelluxation."},
-{s:"ORT",n:"Ortopedi",p:"Vilken skada är INTE associerad med axelledsluxation? <span class='hint'>(Hill-Sachs, Bankart, rotatorkuffruptur, skidtumme, kapselruptur)</span>",a:"<strong>Skidtumme</strong> — UCL-skada i tummens MCP-led, helt annan mekanism."},
-{s:"ORT",n:"Ortopedi",p:"Lateral armbågssmärta, greppsvaghet. Diagnos och behandling?",a:"<strong>Tennisarmbåge (epicondylitis lateralis).</strong> Förstahandsbehandling: <strong>excentrisk träning</strong>."},
-{s:"ORT",n:"Ortopedi",p:"Förstahandsbehandling vid tendinopati (tennis-/achilles)?",a:"<strong>Excentrisk träning.</strong> Bäst evidens."},
-{s:"ORT",n:"Ortopedi",p:"Vilka primärtumörer metastaserar vanligast till ryggraden?",a:"<strong>Lunga, bröst, prostata, njure.</strong>"},
-
-// ===== ALLMÄN MEDICIN =====
-{s:"MED",n:"Allmän medicin",p:"Tredje kardinalssymtomet vid hjärtsvikt, utöver andfåddhet och bensvullnad?",a:"<strong>Konditionsnedsättning/trötthet.</strong>"},
-{s:"MED",n:"Allmän medicin",p:"NYHA IIIa vs IIIb — skillnad?",a:"<strong>IIIa:</strong> klarar >200 m plan gång. <strong>IIIb:</strong> klarar inte 200 m."},
-{s:"MED",n:"Allmän medicin",p:"Vid vilken arytmi är patienten alltid helt livlös?",a:"<strong>Kammarflimmer (VF).</strong> Ingen pumpfunktion → HLR + defibrillering."},
-{s:"MED",n:"Allmän medicin",p:"Mest karaktäristiska symtomet vid KOL-exacerbation, utöver andfåddhet?",a:"<strong>Ökad slemproduktion.</strong>"},
-{s:"MED",n:"Allmän medicin",p:"Viktigaste behandlingen vid nyupptäckt KOL?",a:"<strong>Rökstopp.</strong> Enda åtgärden som bromsar progressionen."},
-{s:"MED",n:"Allmän medicin",p:"Vad skiljer T1DM från T2DM?",a:"<strong>T1DM:</strong> autoimmun betacellsdestruktion → absolut insulinbrist. <strong>T2DM:</strong> insulinresistens. T2DM har starkare ärftlighet (tentafälla!)."},
-{s:"MED",n:"Allmän medicin",p:"Förstahandsval vid farmakologisk behandling av T2DM?",a:"<strong>Metformin.</strong> Inte insulin."},
-{s:"MED",n:"Allmän medicin",p:"DS-CRB-65 — vilka fyra riskfaktorer?",a:"<strong>C</strong>onfusion, <strong>R</strong>espiratory rate >30, <strong>B</strong>lood pressure <90/60, ålder ≥<strong>65</strong>."},
-{s:"MED",n:"Allmän medicin",p:"Typiskt DVT-symptom utöver ensidig bensvullnad?",a:"<strong>Palpationsömhet över kärlet.</strong> Blek hud = arteriell insufficiens (inte DVT)."},
-{s:"MED",n:"Allmän medicin",p:"Virchows triad — tre faktorer?",a:"(1) <strong>Hyperkoagulabilitet</strong>. (2) <strong>Venös stas</strong>. (3) <strong>Endotelskada</strong>. Inte 'ärftlighet' och inte 'trauma' (fel termer)."},
-
-// ===== REUMATOLOGI =====
-{s:"REU",n:"Reumatologi",p:"SLE — nämn fyra organsystem utöver hud och leder.",a:"(1) <strong>Njurar</strong> (lupusnefrit — allvarligast). (2) <strong>Lungor</strong>. (3) <strong>Hjärta</strong>. (4) <strong>CNS</strong>."},
-{s:"REU",n:"Reumatologi",p:"Fyra läkemedelstyper vid inflammatorisk reumatisk sjukdom med biverkningar?",a:"(1) <strong>NSAID</strong> — magsår. (2) <strong>Kortison</strong> — osteoporos, infektionsrisk. (3) <strong>DMARD/metotrexat</strong> — levertoxicitet. (4) <strong>Biologiska/TNF-hämmare</strong> — infektionsrisk, tbc-reaktivering."},
-{s:"REU",n:"Reumatologi",p:"Vanligaste inflammatoriska ledsjukdomen? Två inre organ som kan drabbas?",a:"<strong>RA.</strong> Organ: <strong>lungor</strong> och <strong>hjärta</strong>."},
-{s:"REU",n:"Reumatologi",p:"Skillnad infektiös artrit vs reaktiv artrit?",a:"<strong>Infektiös:</strong> bakterier i leden → antibiotika. <strong>Reaktiv:</strong> steril led, infektion annanstans → NSAID."},
-{s:"REU",n:"Reumatologi",p:"Proximal muskelsvaghet, utslag MCP/PIP, andfåddhet. Diagnos + behandling?",a:"<strong>Dermatomyosit.</strong> Gottrons papler. Behandling: <strong>kortison + DMARD</strong>."},
-{s:"REU",n:"Reumatologi",p:"Stram hud händer, andfåddhet, torrhosta. Diagnos?",a:"<strong>Systemisk skleros (sklerodermi).</strong> Raynauds fenomen vanligt."},
-
-// ===== GYNEKOLOGI =====
-{s:"GYN",n:"Gynekologi",p:"Gravid vecka 24, yr vid övningar på rygg. Orsak?",a:"<strong>Vena cava-syndromet.</strong> Uterus komprimerar v. cava inferior i ryggläge → blodtrycksfall. Undvik ryggläge efter vecka 20."},
-{s:"GYN",n:"Gynekologi",p:"Behandling av spänd bäckenbottenmuskulatur?",a:"Nedåtandning, töjning, avslappning. <strong>Inte styrketräning</strong> — förvärrar spändheten."},
-{s:"GYN",n:"Gynekologi",p:"Fyra besvär efter vaginal förlossningsbristning?",a:"(1) <strong>Urininkontinens</strong>. (2) <strong>Analinkontinens</strong>. (3) <strong>Sexuell dysfunktion</strong>. (4) <strong>Prolaps</strong>."},
-{s:"GYN",n:"Gynekologi",p:"Menstruationsrubbningar och stressfraktur — mekanism?",a:"Energibrist → GnRH↓ → östrogen↓ → <strong>minskad bentäthet → stressfrakturer</strong>."},
-{s:"GYN",n:"Gynekologi",p:"Fysiska aktivitetsrekommendationer vid komplikationsfri graviditet?",a:"≥<strong>150 min/vecka</strong> måttlig intensitet. Undvik ryggläge efter månad 4. Bäckenbottenträning rekommenderas."},
-{s:"GYN",n:"Gynekologi",p:"Vilka graviditetskomplikationer kan fysisk aktivitet förebygga?",a:"<strong>Graviditetsdiabetes, preeklampsi, graviditetshypertoni</strong>, överdriven viktuppgång, depression."},
-{s:"GYN",n:"Gynekologi",p:"Vad innebär 'the knack'?",a:"<strong>Bäckenbottenkontraktion innan buktryckhöjande aktivitet</strong> (hosta, lyft). Minskar urinläckage."},
-{s:"GYN",n:"Gynekologi",p:"Röda flaggor inom gynekologi för FT?",a:"Kontaktblödning, postmenopausal blödning, ensidig buksmärta i tidig graviditet, snabb bukresistens → remiss."},
-
-// ===== TENTA 2026 =====
-
-// KIRURGI
-{s:"KIR",n:"Kirurgi",p:"Du ska mobilisera en nyopererad patient. Hur förbereder du dig?",a:"Tar fram <strong>hjälpmedel</strong>, kontrollerar <strong>slangar och infarter</strong>. Inte vitalparametrar (det är övervakning, inte förberedelse)."},
-{s:"KIR",n:"Kirurgi",p:"Generell rekommendation för postoperativ andningsvård?",a:"<strong>10 djupa andetag × 3, varje timme vaken tid.</strong>"},
-{s:"KIR",n:"Kirurgi",p:"Smärta periumbilikt → vandrat till höger fossa, förvärras vid rörelse. Diagnos?",a:"<strong>Appendicit.</strong> Klassisk smärtvandring från naveln till höger fossa."},
-{s:"KIR",n:"Kirurgi",p:"Vilka organ opereras bort vid cystektomi hos man?",a:"<strong>Urinblåsa + prostata + sädesblåsor.</strong>"},
-{s:"KIR",n:"Kirurgi",p:"Vilken brännskada kräver alltid operation?",a:"<strong>Fullhudsbrännskada.</strong> Inga dermala element kvar → kan inte läka spontant."},
-{s:"KIR",n:"Kirurgi",p:"Nämn bukens nio regioner (svenska namn).",a:"<strong>Epigastrium</strong> (övre mitten), <strong>hö/vä arcus</strong> (under revbenen), <strong>hö/vä flank</strong> (sidorna), <strong>umbilikalt</strong> (naveln), <strong>hö/vä fossa</strong> (nedre sidorna), <strong>suprapubiskt</strong> (nedre mitten)."},
-{s:"KIR",n:"Kirurgi",p:"Vilka organ ligger i höger arcus (hypokondrium)?",a:"<strong>Lever, gallblåsa</strong>, höger njure, kolon (hepatic flexure)."},
-{s:"KIR",n:"Kirurgi",p:"Vilka organ ligger i epigastriet?",a:"<strong>Magsäck, pankreas, duodenum</strong>, del av levern, binjurar."},
-{s:"KIR",n:"Kirurgi",p:"Vilka organ ligger i höger fossa?",a:"<strong>Appendix, cekum</strong>, nedre kolon ascendens, tunntarm."},
-{s:"KIR",n:"Kirurgi",p:"Vilka organ ligger i vänster fossa?",a:"<strong>Kolon sigmoideum</strong>, nedre kolon descendens, tunntarm."},
-{s:"KIR",n:"Kirurgi",p:"Appendicitsmärta — var börjar den och vart vandrar den?",a:"Börjar <strong>periumbilikt</strong> (kring naveln) → vandrar till <strong>höger fossa</strong>."},
-{s:"KIR",n:"Kirurgi",p:"Gallstenssmärta — vilken bukregion?",a:"<strong>Höger arcus / epigastrium.</strong>"},
-{s:"KIR",n:"Kirurgi",p:"Divertikulitsmärta — vilken bukregion?",a:"<strong>Vänster fossa.</strong> Sigmoideum ligger i vänster fossa iliaca."},
-
-// ORTOPEDI
-{s:"ORT",n:"Ortopedi",p:"Varför är belastning viktigt för broskhälsa?",a:"Brosk saknar blodkärl — näring sker genom <strong>diffusion via ledvätska</strong>, driven av belastning."},
-{s:"ORT",n:"Ortopedi",p:"Artrossmärta vid träning som gått över inom 24 timmar — okej?",a:"<strong>Ja.</strong> Smärta inom 24 timmar innebär inte att brosket skadats. Träning behöver inte vara helt smärtfri."},
-{s:"ORT",n:"Ortopedi",p:"Vilka fotledsfrakturer kan belastas efter gipsning?",a:"<strong>Weber A</strong> — fraktur nedom syndesmosen, stabil."},
-{s:"ORT",n:"Ortopedi",p:"Vilken faktor påverkar INTE benläkning negativt? <span class='hint'>(Rökning, ålder, diabetes, paracetamol, malnutrition)</span>",a:"<strong>Paracetamol.</strong> NSAID stör benläkning, men paracetamol gör det inte. Tentafälla!"},
-{s:"ORT",n:"Ortopedi",p:"Viktigast i tidiga postoperativa fasen efter frakturkirurgi?",a:"<strong>Belastning enligt ordination.</strong> Immobilisering/sängläge = alltid fel svar."},
-{s:"ORT",n:"Ortopedi",p:"Bilateral bensmärta vid gång, lindras framåtlutning, normal puls. Diagnos?",a:"<strong>Lumbal spinal stenos.</strong> Normal puls utesluter claudicatio."},
-{s:"ORT",n:"Ortopedi",p:"Akut ryggsmärta, utstrålning ben, nedsatt sensibilitet fotrygg, svag dorsalflexion. Diagnos?",a:"<strong>Diskbråck med L5-rotpåverkan.</strong> L5 = fotrygg + dorsalflexion."},
-{s:"ORT",n:"Ortopedi",p:"Gravid kvinna, nattliga parestesier, tappar saker, domningar. Diagnos?",a:"<strong>Karpaltunnelsyndrom.</strong> Graviditet = riskfaktor."},
-{s:"ORT",n:"Ortopedi",p:"Varför är fysfrakturer hos barn viktiga att identifiera?",a:"Kan leda till <strong>tillväxtstörning</strong>."},
-{s:"ORT",n:"Ortopedi",p:"Viktigaste prognosfaktorn för god protesgång efter amputation?",a:"<strong>Tidigare gångförmåga.</strong> Inte ålder eller amputationsnivå."},
-{s:"ORT",n:"Ortopedi",p:"Vem beslutar om protesförsörjning?",a:"<strong>Multidisciplinärt team.</strong> Inte enskild yrkesgrupp."},
-
-// ALLMÄN MEDICIN
-{s:"MED",n:"Allmän medicin",p:"Typ 1 vs typ 2 hjärtinfarkt — skillnad?",a:"<strong>Typ 1:</strong> plackruptur i kranskärlet. <strong>Typ 2:</strong> obalans syretillförsel/behov utan plackruptur."},
-{s:"MED",n:"Allmän medicin",p:"Viktigaste blodprovet vid misstänkt hjärtsvikt?",a:"<strong>NT-proBNP.</strong> Inte troponin (= infarkt), inte CRP (= inflammation)."},
-{s:"MED",n:"Allmän medicin",p:"Vad innebär 'hjärtarytmi'?",a:"<strong>Alla avvikelser från sinusrytm</strong> — snabb, långsam, oregelbunden, eller icke-sinus. Inte bara oregelbunden."},
-{s:"MED",n:"Allmän medicin",p:"Var sker gasutbytet i luftvägarna?",a:"<strong>Alveolerna.</strong> Inte trachea, bronker eller bronkioler."},
-{s:"MED",n:"Allmän medicin",p:"Bronkiektasier — huvudsymtom utöver hosta och andfåddhet?",a:"<strong>Återkommande lunginflammationer.</strong>"},
-{s:"MED",n:"Allmän medicin",p:"Hur stor andel av Sveriges vuxna har diabetes?",a:"<strong>~5 %</strong> (~500 000 personer). ~90 % typ 2."},
-{s:"MED",n:"Allmän medicin",p:"Metabola syndromet — vilken riskfaktor måste vara uppfylld?",a:"<strong>Bukfetma</strong> (IDF 2005). Inte diabetes, inte rökning. Tentafälla!"},
-{s:"MED",n:"Allmän medicin",p:"Vanligaste bakterien vid lunginflammation?",a:"<strong>Streptococcus pneumoniae</strong> (pneumokocken)."},
-{s:"MED",n:"Allmän medicin",p:"VTE-återfallsrisk inom 5 år?",a:"<strong>20–30 %.</strong>"},
-
-// REUMATOLOGI
-{s:"REU",n:"Reumatologi",p:"I vilken ordning utreds reumatisk sjukdom?",a:"(1) <strong>Anamnes</strong> → (2) <strong>klinisk undersökning</strong> → (3) <strong>blodprover</strong> → (4) <strong>bilddiagnostik</strong>."},
-{s:"REU",n:"Reumatologi",p:"Vilka två symtom är gemensamma för nästan alla inflammatoriska reumatiska tillstånd?",a:"<strong>Smärta</strong> och <strong>trötthet</strong>."},
-{s:"REU",n:"Reumatologi",p:"Fyra ledtrådar som talar för ankyloserande spondylit (inte degenerativ rygg)?",a:"(1) <strong>Ung ålder</strong>. (2) <strong>Bättre vid rörelse</strong>, sämre i vila. (3) <strong>Morgonstelhet >30 min</strong>. (4) <strong>Nattlig smärta</strong>."},
-{s:"REU",n:"Reumatologi",p:"Man 60+, svaghet quadriceps + fingerflexorer, muskelatrofi. Diagnos?",a:"<strong>Inklusionskroppsmyosit (IBM).</strong> Ingen effektiv farmakologisk behandling (skiljer från DM/PM)."},
-
-// GYNEKOLOGI
-{s:"GYN",n:"Gynekologi",p:"AAS i puberteten — varför kortare slutlängd?",a:"Androgener → <strong>östrogen via aromatisering</strong> → <strong>för tidig tillslutning av tillväxtzoner</strong>."},
-{s:"GYN",n:"Gynekologi",p:"Bäckenbottens tillstånd genom livet?",a:"<strong>Barn:</strong> omogen. <strong>Vuxna:</strong> överaktivitet. <strong>Gravid:</strong> ökad laxitet. <strong>Post partum:</strong> uttänjd/skadad. <strong>Klimakteriet:</strong> nedsatt styrka (östrogenbrist)."},
-{s:"GYN",n:"Gynekologi",p:"Konsekvenser av hypotalamisk amenorré?",a:"<strong>Infertilitet, minskad bentäthet, stressfrakturer, hämmad skelettutveckling</strong> (östrogenbrist)."},
-{s:"GYN",n:"Gynekologi",p:"Vad är endometrios?",a:"<strong>Livmoderslemhinneliknande vävnad utanför livmodern.</strong> Inte mensrubbning, inte ägglossningssmärta."}
-];
-
-const SUBJECTS=[...new Set(C.map(c=>c.s))];
-const SNAMES={};C.forEach(c=>SNAMES[c.s]=c.n);
-const CNUM={};
-const _sc={};C.forEach((c,i)=>{if(!_sc[c.s])_sc[c.s]=0;_sc[c.s]++;CNUM[i]=_sc[c.s]});
-
-let activeSub=null,queue=[],cur=0,ratings={},counts={knew:0,unsure:0,missed:0},mode='shuffle';
-const STORE_KEY='med1-fc-progress';
-
-function loadProgress(){
-  try{const d=localStorage.getItem(STORE_KEY);return d?JSON.parse(d):null}catch(e){return null}
-}
-function saveProgress(){
-  try{
-    const d={ratings:{},counts,ts:Date.now()};
-    Object.keys(ratings).forEach(k=>{d.ratings[k]=ratings[k]});
-    localStorage.setItem(STORE_KEY,JSON.stringify(d));
-    const b=document.querySelector('.save-btn');if(b){b.textContent='Sparat!';setTimeout(()=>b.textContent='Spara resultat',1500)}
-  }catch(e){}
-}
-
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-
-function buildPills(){
-  const el=document.getElementById('pills');
-  let h='<button class="pill'+(activeSub===null?' active':'')+'" onclick="filterSub(null)">Alla ('+C.length+')</button>';
-  SUBJECTS.forEach(s=>{
-    const cnt=C.filter(c=>c.s===s).length;
-    h+='<button class="pill'+(activeSub===s?' active':'')+'" onclick="filterSub(\''+s+'\')">'+SNAMES[s]+' ('+cnt+')</button>';
-  });
-  el.innerHTML=h;
-}
-function filterSub(s){activeSub=s;buildPills();startSession()}
-
-function setMode(m){
-  mode=m;
-  document.getElementById('mode-shuffle').classList.toggle('active',m==='shuffle');
-  document.getElementById('mode-seq').classList.toggle('active',m==='seq');
-  startSession();
-}
-
-function startSession(){
-  const pool=activeSub===null?C:C.filter(c=>c.s===activeSub);
-  const ids=pool.map(c=>C.indexOf(c));
-  queue=mode==='shuffle'?shuffle(ids):ids;
-  cur=0;ratings={};counts={knew:0,unsure:0,missed:0};
-  document.getElementById('finish-area').hidden=true;document.getElementById('card-area').hidden=false;
-  renderCard();
-}
-
-function openIndex(){
-  document.getElementById('index-search').value='';
-  renderIndex();
-  document.getElementById('index-overlay').hidden=false;
-  document.getElementById('index-search').focus();
-}
-function closeIndex(e){
-  if(e&&e.target!==document.getElementById('index-overlay'))return;
-  document.getElementById('index-overlay').hidden=true;
-}
-function renderIndex(){
-  const q=(document.getElementById('index-search').value||'').toLowerCase();
-  const pool=activeSub===null?C:C.filter(c=>c.s===activeSub);
-  let h='';
-  const groups={};
-  pool.forEach(c=>{const ci=C.indexOf(c);if(!groups[c.s])groups[c.s]=[];groups[c.s].push(ci)});
-  Object.keys(groups).forEach(s=>{
-    const items=groups[s];
-    const filtered=items.filter(ci=>{
-      const c=C[ci];
-      const label=(c.n+' '+CNUM[ci]+' '+c.p).toLowerCase();
-      return !q||label.includes(q);
-    });
-    if(filtered.length===0)return;
-    h+='<div class="index-group-label">'+SNAMES[s]+' ('+filtered.length+')</div>';
-    filtered.forEach(ci=>{
-      const c=C[ci];
-      const plain=c.p.replace(/<[^>]*>/g,'');
-      const short=plain.length>80?plain.slice(0,80)+'...':plain;
-      let badge='';
-      if(ratings[ci]){badge='<span class="index-item-badge '+ratings[ci]+'">'+(ratings[ci]==='knew'?'Kunde':ratings[ci]==='unsure'?'Osäker':'Missade')+'</span>'}
-      h+='<div class="index-item" onclick="jumpTo('+ci+')"><span class="index-item-num">'+CNUM[ci]+'</span><span class="index-item-q">'+short+'</span>'+badge+'</div>';
-    });
-  });
-  if(!h)h='<p style="color:var(--text-secondary);font-size:13px;padding:16px 0">Inga kort matchar sökningen.</p>';
-  document.getElementById('index-body').innerHTML=h;
-}
-function jumpTo(ci){
-  const idx=queue.indexOf(ci);
-  if(idx!==-1){cur=idx}else{queue.push(ci);cur=queue.length-1}
-  document.getElementById('index-overlay').hidden=true;
-  document.getElementById('finish-area').hidden=true;
-  document.getElementById('card-area').hidden=false;
-  renderCard();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function restart(mode){
-  let ids;
-  if(mode==='missed')ids=Object.keys(ratings).filter(k=>ratings[k]==='missed').map(Number);
-  else if(mode==='unsure')ids=Object.keys(ratings).filter(k=>ratings[k]==='unsure'||ratings[k]==='missed').map(Number);
-  else ids=null;
-  if(ids&&ids.length===0){startSession();return}
-  if(ids){queue=shuffle(ids);cur=0;ratings={};counts={knew:0,unsure:0,missed:0};document.getElementById('finish-area').hidden=true;document.getElementById('card-area').hidden=false;renderCard()}
-  else startSession();
-}
-
-function renderCard(){
-  if(cur>=queue.length){showFinish();return}
-  const ci=queue[cur],c=C[ci];
-  document.getElementById('card-section').innerHTML='<span>'+c.n+'</span><span class="card-qnum">'+c.s+' '+CNUM[ci]+'</span>';
-  document.getElementById('card-prompt').innerHTML=c.p;
-  const aa=document.getElementById('answer-area');
-  const rb=document.getElementById('reveal-btn');
-  const rr=document.getElementById('rate-row');
-  document.getElementById('prev-btn').hidden=cur===0;
-  document.getElementById('next-btn').hidden=cur>=queue.length-1;
-  if(ratings[ci]!==undefined){
-    aa.innerHTML=c.a;aa.hidden=false;rb.hidden=true;rr.hidden=true;
-  } else {
-    aa.hidden=true;rb.hidden=false;rr.hidden=true;
+function get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+(function () {
+  const q = get('med1-quiz-v1');
+  if (q) {
+    const v = Object.values(q), done = v.length, ok = v.filter(a => a.ok).length;
+    if (done) document.getElementById('p-mq').innerHTML = done + ' / 166 besvarade · ' + Math.round(ok / done * 100) + ' % rätt<div class="bar"><div style="width:' + (done / 166 * 100) + '%"></div></div>';
   }
-  updateStats();
-}
-
-function reveal(){
-  const ci=queue[cur],c=C[ci];
-  document.getElementById('answer-area').innerHTML=c.a;
-  document.getElementById('answer-area').hidden=false;
-  document.getElementById('reveal-btn').hidden=true;
-  document.getElementById('rate-row').hidden=false;
-}
-
-function rate(r){
-  const ci=queue[cur];
-  ratings[ci]=r;counts[r]++;
-  cur++;renderCard();
-}
-
-function go(dir){cur+=dir;if(cur<0)cur=0;renderCard()}
-
-function updateStats(){
-  document.getElementById('stat-num').textContent=Math.min(cur+1,queue.length);
-  document.getElementById('stat-total').textContent=queue.length;
-  document.getElementById('s-knew').textContent=counts.knew;
-  document.getElementById('s-unsure').textContent=counts.unsure;
-  document.getElementById('s-missed').textContent=counts.missed;
-  const rated=counts.knew+counts.unsure+counts.missed;
-  const p=queue.length>0?(rated/queue.length*100):0;
-  document.getElementById('progress-fill').style.width=p+'%';
-  document.getElementById('progress-label').textContent=rated+' / '+queue.length;
-}
-
-function showFinish(){
-  document.getElementById('card-area').hidden=true;
-  document.getElementById('finish-area').hidden=false;
-  const t=counts.knew+counts.unsure+counts.missed;
-  document.getElementById('final-msg').textContent=counts.knew+' kunde, '+counts.unsure+' osäkra, '+counts.missed+' missade av '+t;
-  const ss={};
-  queue.forEach(ci=>{const c=C[ci];if(!ss[c.s])ss[c.s]={n:c.n,k:0,u:0,m:0};const r=ratings[ci];if(r==='knew')ss[c.s].k++;else if(r==='unsure')ss[c.s].u++;else ss[c.s].m++});
-  let bh='<h3>Per ämne</h3>';
-  SUBJECTS.forEach(s=>{
-    if(!ss[s])return;
-    const st=ss[s];
-    bh+='<div class="breakdown-row"><span class="breakdown-name">'+st.n+'</span><div class="breakdown-counts"><span class="c-knew">'+st.k+'</span><span class="c-unsure">'+st.u+'</span><span class="c-missed">'+st.m+'</span></div></div>';
-  });
-  document.getElementById('breakdown').innerHTML=bh;
-  updateStats();
-}
-
-buildPills();startSession();
+  const f = get('med1-fc-progress');
+  if (f && f.counts) {
+    const c = f.counts, n = (c.knew || 0) + (c.unsure || 0) + (c.missed || 0);
+    if (n) document.getElementById('p-mf').innerHTML = 'Senast sparat: ' + (c.knew || 0) + ' kunde · ' + (c.unsure || 0) + ' osäkra · ' + (c.missed || 0) + ' missade';
+  }
+})();
+const THEMES = ['system', 'light', 'dark'], TLABEL = { system: 'Tema: auto', light: 'Tema: ljust', dark: 'Tema: mörkt' };
+function curTheme() { try { return localStorage.getItem('fysio-theme') || 'system'; } catch (e) { return 'system'; } }
+function applyTheme(t) { if (t === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); document.getElementById('theme-btn').textContent = TLABEL[t]; }
+function cycleTheme() { const t = THEMES[(THEMES.indexOf(curTheme()) + 1) % 3]; try { localStorage.setItem('fysio-theme', t); } catch (e) {} applyTheme(t); }
+applyTheme(curTheme());
 </script>
 </body>
 </html>
