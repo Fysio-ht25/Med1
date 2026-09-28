@@ -366,10 +366,11 @@ var Q=[{"id": "K1", "src": "canvas", "s": "KIR", "t": null, "case": null, "q": "
       function reveal() { ans.hidden = false; }
 
       if (q.type === 'one') {
+        var locked = false;
         $$('.opt', face).forEach(function (b) {
           b.addEventListener('click', function () {
-            if (face.getAttribute('data-locked')) return;
-            face.setAttribute('data-locked', '1');
+            if (locked) return;
+            locked = true;
             var i = +b.getAttribute('data-i');
             $$('.opt', face).forEach(function (x, j) { x.disabled = true; if (q.c.indexOf(j) >= 0) x.classList.add('right'); });
             if (q.c.indexOf(i) < 0) b.classList.add('wrong');
