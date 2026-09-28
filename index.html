@@ -1,123 +1,295 @@
 <!DOCTYPE html>
-<html lang="sv">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fysio T3 — Tentaträning</title>
-<script>try{var t=localStorage.getItem('fysio-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap">
-<style>
-:root {
-  --bg: #F1F1F1; --surface: #FFFFFF; --text: #1A1018; --text-secondary: #5A4A54;
-  --plommon-deep: #4F0433; --plommon-mid: #870052; --plommon-light: #EDDBE4; --plommon-ghost: #F6EDF3; --border: #D8CDD4;
-  --ok: #2D7D46; --track: #E8DDE4;
-  --shadow: 0 1px 3px rgba(79,4,51,0.08), 0 4px 12px rgba(79,4,51,0.04);
-  --font: 'DM Sans', system-ui, -apple-system, sans-serif;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #1A1018; --surface: #2A1F26; --text: #EDE6EA; --text-secondary: #A89BA3;
-    --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836; --plommon-ghost: #2D1F28; --border: #3D2F38;
-    --ok: #5ABA74; --track: #352A32; --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #1A1018; --surface: #2A1F26; --text: #EDE6EA; --text-secondary: #A89BA3;
-  --plommon-deep: #D4A0C4; --plommon-mid: #C27AAE; --plommon-light: #3D2836; --plommon-ghost: #2D1F28; --border: #3D2F38;
-  --ok: #5ABA74; --track: #352A32; --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2);
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; }
-.app { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
-.topbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
-.theme-btn { font-family: var(--font); font-size: 12px; padding: 4px 10px; border-radius: 100px; border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); cursor: pointer; }
-h1 { font-size: 26px; font-weight: 700; color: var(--plommon-deep); line-height: 1.2; }
-.lead { font-size: 14px; color: var(--text-secondary); margin: 6px 0 28px; }
-.exam { margin-bottom: 30px; }
-.exam-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
-.exam h2 { font-size: 18px; font-weight: 700; color: var(--plommon-deep); }
-.exam .tag { font-size: 12px; color: var(--text-secondary); }
-.exam .desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
-.tile { display: block; text-decoration: none; color: inherit; background: var(--surface); border-radius: 10px; padding: 18px; box-shadow: var(--shadow); border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s; }
-.tile:hover { border-color: var(--plommon-mid); transform: translateY(-1px); }
-.tile .kind { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--plommon-mid); }
-.tile h3 { font-size: 17px; font-weight: 700; margin: 2px 0 4px; color: var(--text); }
-.tile p { font-size: 13px; color: var(--text-secondary); }
-.prog { margin-top: 12px; font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
-.bar { height: 5px; border-radius: 3px; background: var(--track); overflow: hidden; margin-top: 5px; }
-.bar div { height: 100%; background: var(--plommon-mid); }
-.weights { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
-.w { font-size: 11px; padding: 3px 9px; border-radius: 100px; background: var(--plommon-ghost); border: 1px solid var(--plommon-light); color: var(--text-secondary); }
-.w strong { color: var(--plommon-deep); }
-.foot { font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 14px; }
-</style>
-</head>
-<body>
-<div class="app">
-  <div class="topbar"><button class="theme-btn" id="theme-btn" onclick="cycleTheme()"></button></div>
-  <h1>Tentaträning — Medicinska ämnen 1</h1>
-  <p class="lead">Quiz för att testa dig, flashcards för att repetera. Ditt resultat sparas i webbläsaren på den här enheten.</p>
+<html lang="sv"><head><meta charset="UTF-8">
+<script>try{if(localStorage.getItem("fysio-theme")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tentaträning – Med 1</title>
+<meta name="description" content="Övningstenta, quiz och repetitionskort inför tentorna i Medicinska ämnen 1.">
+<meta name="theme-color" content="#0c070a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%234F0433'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='14' fill='%23EDDBE4' text-anchor='middle'%3EM1%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>/* Redaktionell stil (mörkt tema som standard, ljust som val), struktur genom typografi och tunna linjer. Raka hörn, inga skuggor.
+   KI-palett (plommon) + DM Sans. Modulfärgerna används bara som små markörer. */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{color-scheme:dark;--c:#870052;--ct:color-mix(in srgb,var(--c) 45%,#fff);
+ --page:#0c070a;--panel:#2a1c25;--panel-hover:#3a2632;--ink:#efe7eb;--mute:#b3a5ad;--rule:#4b3942;--hair:#2b2027;
+ --strong:#f1d3e3;--accent:#FF876F;--hl:#FF876F;--band:#870052;--btn:#870052;--btn-hover:#a3176a;--ok:#74cfa0;--bad:#f0908b;--today:rgba(135,0,82,.45)}
+:root[data-theme="light"]{color-scheme:light;--ct:var(--c);
+ --page:#fff;--panel:#F1F1F1;--panel-hover:#E4E4E4;--ink:#1c1c1c;--mute:#5f5f5f;--rule:#d4d4d4;--hair:#e8e8e8;
+ --strong:#4F0433;--accent:#C4452D;--hl:#FF876F;--band:#4F0433;--btn:#4F0433;--btn-hover:#870052;--ok:#2E6B4F;--bad:#A23A37;--today:#EBEBEB}
+html{-webkit-text-size-adjust:100%;--gut:clamp(1rem,4vw,3.5rem)}
+body{font-family:'DM Sans',Arial,sans-serif;font-size:16px;line-height:1.55;color:var(--ink);background:var(--page);max-width:1240px;margin:0 auto;padding:0 var(--gut) 4rem}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--strong)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.small{font-size:14px;color:var(--mute)}
+.note{margin:.4rem 0 1.2rem}
 
-  <section class="exam">
-    <div class="exam-head"><h2>Stora tentan</h2><span class="tag">Kirurgi · Ortopedi · Medicin · Reumatologi · Gynekologi</span></div>
-    <div class="weights">
-      <span class="w">Ortopedi <strong>16 p</strong></span><span class="w">Kirurgi <strong>10 p</strong></span><span class="w">Medicin <strong>10 p</strong></span><span class="w">Reumatologi <strong>8 p</strong></span><span class="w">Gynekologi <strong>5 p</strong></span>
-    </div>
-    <div class="grid">
-      <a class="tile" href="med1-quiz.html">
-        <div class="kind">Quiz</div>
-        <h3>Flervalsfrågor</h3>
-        <p>166 frågor på tentanivå, grupperade efter ämne och område, med förklaring till varje svar.</p>
-        <div class="prog" id="p-mq"></div>
-      </a>
-      <a class="tile" href="med1-flashcards.html">
-        <div class="kind">Flashcards</div>
-        <h3>Repetitionskort</h3>
-        <p>102 kort. Tänk efter, vänd kortet och betygsätt dig själv.</p>
-        <div class="prog" id="p-mf"></div>
-      </a>
-    </div>
-  </section>
+/* Sidhuvud */
+body::before{content:"";display:block;height:6px;background:var(--band);margin:0 calc(-1 * var(--gut))}
+.crumb{display:flex;gap:1.2rem;font-size:14px;padding:1rem 0 0}
+.crumb a{text-decoration:none;font-weight:500}
+.hero{padding:2.2rem 0 1.4rem;border-bottom:1px solid var(--rule);margin-bottom:1.6rem}
+.hero .tag{font-size:14px;color:var(--ct);font-weight:500;margin-bottom:.4rem}
+.hero h1{font-size:clamp(34px,4.5vw,56px);line-height:1.05;font-weight:800;letter-spacing:-.02em;color:var(--strong)}
+.hero .sub{font-size:18px;color:var(--mute);margin-top:.7rem;max-width:34em}
+h2{font-size:28px;line-height:1.2;font-weight:800;letter-spacing:-.01em;color:var(--strong);margin:3rem 0 1.2rem}
+h2::after{content:"";display:block;width:48px;height:3px;background:var(--hl);margin-top:.55rem}
+h3{font-size:19px;line-height:1.3;color:var(--strong);font-weight:700}
 
-  <section class="exam">
-    <div class="exam-head"><h2>Neurologi</h2><span class="tag">Egen tenta</span></div>
-    <div class="grid">
-      <a class="tile" href="neuro-quiz.html">
-        <div class="kind">Quiz</div>
-        <h3>Flervalsfrågor</h3>
-        <p>75 frågor med förklaringar.</p>
-      </a>
-      <a class="tile" href="neuro-flashcards.html">
-        <div class="kind">Flashcards</div>
-        <h3>Repetitionskort</h3>
-        <p>70 kort.</p>
-      </a>
-    </div>
-  </section>
+body{position:relative}
+.theme-btn{position:absolute;top:1rem;right:var(--gut);font-size:14px;font-weight:500;color:var(--accent);padding:.1rem 0;border-bottom:1px solid currentColor}
+.theme-btn:hover{color:var(--strong)}
 
-  <p class="foot">Innehållet bygger på kursens föreläsningar, lärandemål och exempeltentor. Det ersätter inte kurslitteraturen.</p>
+/* Etiketter i löptext */
+.lab{font-size:14px;font-weight:700;color:var(--strong)}
+.pill{font-size:14px;font-weight:700}
+.pill.exam{color:var(--strong)}.pill.due{color:var(--accent)}.pill.must{color:var(--mute)}
+.pill+.pill::before{content:"·";color:var(--rule);margin-right:.45rem;font-weight:400}
+.mod{font-size:14px;font-weight:500;color:var(--mute)}
+.mod::before{content:"";display:inline-block;width:.6em;height:.6em;background:var(--c);margin-right:.4em;vertical-align:.05em}
+.m1{--c:#8A2A6B}.m2{--c:#1F5F8B}.m3{--c:#2E7D5B}.m4{--c:#8F5F0E}.m5{--c:#5B4B9A}.m6{--c:#B0413E}
+.legend{font-size:14px;margin:0 0 .6rem}
+
+/* Knappar och val */
+.btns{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.9rem}
+.btn{display:inline-block;font-size:15px;font-weight:700;background:var(--btn);color:#fff;border:1.5px solid var(--btn);padding:.45rem 1rem;text-decoration:none;line-height:1.3}
+.btn:hover{background:var(--btn-hover);border-color:var(--btn-hover);color:#fff}
+.btn.alt{background:transparent;color:var(--strong);border-color:var(--strong)}.btn.alt:hover{background:var(--panel-hover);color:var(--strong)}
+.btn.ok{background:transparent;color:var(--ok);border-color:var(--ok)}.btn.ok:hover{background:var(--ok);color:var(--page)}
+.btn.bad{background:transparent;color:var(--bad);border-color:var(--bad)}.btn.bad:hover{background:var(--bad);color:var(--page)}
+.chips,.modes{display:flex;flex-wrap:wrap;gap:.2rem 1.1rem;margin:.2rem 0 .8rem}
+.chip{font-size:15px;color:var(--mute);padding:.2rem 0;border-bottom:2px solid transparent}
+.chip:hover{color:var(--strong)}
+.chip.on{color:var(--strong);font-weight:700;border-bottom-color:var(--hl)}
+.tabs{display:flex;gap:1.6rem;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;border-bottom:1px solid var(--rule);margin-bottom:1.6rem}
+.tabs button{font-size:16px;color:var(--mute);padding:.5rem 0;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button:hover{color:var(--strong)}
+.tabs button.on{color:var(--strong);font-weight:700;border-bottom-color:var(--hl)}
+
+/* Läsbar radlängd: sidan är bred, texten är det inte */
+.tool,.card,.bd,.next,.tabs~.panel .draw{max-width:880px}
+.it{max-width:1000px}
+
+/* Block: inga lådor, bara luft och linjer */
+.card,.tool{padding:0;margin:0 0 2.2rem}
+.tool h3{margin-bottom:.35rem}
+.tool>.small:first-of-type{margin-bottom:.4rem}
+details.card{border-top:1px solid var(--rule);padding-top:.8rem}
+details>summary{cursor:pointer;color:var(--strong);font-weight:700;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"+";display:inline-block;width:1.1em;font-weight:400}
+details[open]>summary::before{content:"–"}
+.card ul{padding-left:1.1rem}.card li{margin-bottom:.5rem}
+.card p+p{margin-top:.6rem}
+ul.plain,ol.plain{padding-left:1.2rem}ul.plain li,ol.plain li{margin-bottom:.35rem}
+.grp{display:block;margin-top:1.1rem;padding-bottom:.25rem;border-bottom:1px solid var(--rule)}
+
+/* Härnäst */
+.next{margin:0 0 1rem}
+.next>.lab{display:block;margin-bottom:.2rem}
+.next ol{list-style:none;border-top:1px solid var(--rule)}
+.next li{display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--hair)}
+.next .cd{font-weight:700;color:var(--strong);font-variant-numeric:tabular-nums}
+.next a{color:var(--ink);text-decoration:none}.next a:hover{color:var(--accent);text-decoration:underline}
+.next>.small{margin-top:.5rem}
+
+/* Datum: tidslinje med datum i marginalen */
+.it{display:grid;grid-template-columns:6.5rem 1fr;gap:1.2rem;padding:1.3rem 0;border-top:1px solid var(--rule);scroll-margin-top:1rem}
+.it[hidden]{display:none}
+.dt{color:var(--strong);line-height:1}
+.dt b{display:block;font-size:40px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dt span{font-size:15px;font-weight:700}
+.dt small{display:block;font-size:14px;color:var(--mute);margin-top:.35rem}
+.it.due .dt,.it.must .dt{color:var(--accent)}
+.it.must .dt b{font-weight:500}
+.top{display:flex;flex-wrap:wrap;gap:.2rem .8rem;margin-bottom:.25rem}
+.bd{min-width:0}
+.bd h3{font-size:20px}
+.when{font-size:16px;color:var(--accent);font-weight:500;margin:.15rem 0 .5rem;font-variant-numeric:tabular-nums}
+.bd p{margin-bottom:.5rem}
+.r{display:grid;grid-template-columns:6.5rem 1fr;gap:.8rem;font-size:15px;padding:.3rem 0}
+.todo{margin-top:.5rem}
+.todo .lab{display:block}
+.it.today{background:linear-gradient(90deg,var(--today),transparent 70%);margin:0 calc(-1 * var(--gut));padding:1.3rem var(--gut)}
+.it.today .dt small::after{content:" · idag";color:var(--strong);font-weight:700}
+.it.past{opacity:.45}
+
+/* Startsidan: paneler som tydligt är klickbara (kicker, rubrik, linje, knapp) */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.2rem}
+.mgrid.two{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.panel-link>.pbtn{margin-top:auto}
+.panel-link{display:flex;flex-direction:column;background:var(--panel);color:var(--ink);text-decoration:none;padding:1.3rem 1.2rem 1.2rem;border-top:4px solid var(--strong);transition:background .15s}
+.panel-link:hover{background:var(--panel-hover);color:var(--ink)}
+.kick{font-size:14px;font-weight:700;color:var(--accent)}
+.ptitle{display:block;font-size:23px;line-height:1.2;font-weight:800;color:var(--strong);margin:.3rem 0 .2rem}
+.ptitle::after{content:none}
+.panel-link .ptitle+*{border-top:2px solid var(--hl);padding-top:.7rem;margin-top:.5rem}
+.mdates{list-style:none;font-size:15px;margin-bottom:.6rem}
+.mdates li{padding:.1rem 0}.mdates li.past{color:var(--mute);text-decoration:line-through}
+.pdesc{font-size:15px;margin-bottom:.8rem}
+.mtools{font-size:14px;color:var(--mute);margin-bottom:1rem}
+.pbtn{display:flex;justify-content:space-between;align-items:center;background:var(--btn);color:#fff;font-weight:700;font-size:15px;padding:.65rem .9rem}
+.pbtn .arr{transition:transform .15s}
+.panel-link:hover .pbtn{background:var(--btn-hover)}.panel-link:hover .arr{transform:translateX(4px)}
+.mdone{display:none;font-size:14px;font-weight:700;color:var(--mute);padding:.65rem 0}
+.mcard.done{opacity:.6}.mcard.done .pbtn{display:none}.mcard.done .mdone{display:block}
+/* Raderna i modulpanelerna linjeras över hela raden (subgrid), så linjer och knappar hamnar i höjd */
+.pfoot{margin-top:auto;display:block}
+@supports (grid-template-rows:subgrid){
+ .mcard{display:grid;grid-row:span 5;grid-template-rows:subgrid;row-gap:0;align-content:start}
+ .mcard .pfoot{align-self:end}
+ .mgrid.two .panel-link{display:grid;grid-row:span 4;grid-template-rows:subgrid;row-gap:0}
+ .mgrid.two .pbtn{align-self:end}
+}
+/* Modulens färg på kant, rubrikrad, linje och knapp */
+.mcard{border-top-color:var(--c)}
+.mcard .kick{color:var(--ct)}
+.mcard .pbtn{background:var(--c)}
+.mcard .ptitle+*{border-top-color:var(--c)}
+.mcard:hover .pbtn{background:var(--c);filter:brightness(1.15)}
+.more{display:inline-block;margin-top:.6rem;font-weight:700;text-decoration:none}
+.more:hover{text-decoration:underline}
+
+/* Modulnavigering */
+.modnav{display:flex;justify-content:space-between;gap:1rem;margin-top:3rem;padding-top:1rem;border-top:2px solid var(--strong);font-size:15px;font-weight:700}
+.modnav a{text-decoration:none}
+
+/* Checklistor */
+.oc ul{list-style:none}
+.todo ul.plain{margin-top:.2rem}
+.oc label,.todo label{display:flex;gap:.7rem;align-items:flex-start;padding:.45rem 0;border-bottom:1px solid var(--hair);cursor:pointer}
+.oc input{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;border:1.5px solid var(--strong);margin-top:.2rem;background:transparent;display:grid;place-content:center}
+.oc input::after{content:"";width:10px;height:10px;background:var(--strong);transform:scale(0);transition:transform .1s}
+.oc input:checked::after{transform:scale(1)}
+.oc input:checked+span{color:var(--mute);text-decoration:line-through}
+
+/* Dragning (övning, patientfall, övningstenta) */
+.draw{border-left:3px solid var(--strong);padding:.2rem 0 .2rem 1.1rem;margin-top:1rem}
+.draw .lab{color:var(--mute);font-weight:500}
+.draw h4{font-size:20px;color:var(--strong);margin:.1rem 0 .3rem}
+.draw h4+p{margin-bottom:.4rem}
+.draw ul{padding-left:1.1rem}.draw li{margin-bottom:.25rem}
+.draw details{margin-top:.6rem}
+.draw details p{margin-top:.4rem;color:var(--ink)}
+.exq{padding-left:1.3rem;margin-bottom:1rem}.exq li{margin-bottom:.9rem}
+.case{font-style:italic;margin:.4rem 0 .8rem;max-width:36em}
+
+/* Timer */
+.timer{display:grid;grid-template-columns:auto 1fr;column-gap:1.6rem;align-items:center}
+.timer h3{grid-column:1/-1}
+.clock{font-size:64px;font-weight:700;line-height:1;color:var(--strong);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.timer .btns{margin-top:0}
+.timer.over .clock{color:var(--bad)}
+.grips{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.2rem 1.4rem;margin-top:1rem;border-top:1px solid var(--rule);padding-top:.6rem}
+.gbtn{font-size:16px;color:var(--mute);padding:.3rem 0;border-bottom:2px solid transparent}
+.gbtn.on{color:var(--strong);font-weight:700;border-bottom-color:var(--hl)}
+.gsum{grid-column:1/-1;margin-top:.4rem;font-variant-numeric:tabular-nums}
+.warn{color:var(--bad);font-weight:700}
+.okc{color:var(--ok);font-weight:700}
+
+/* Kort */
+.deck h3 .small{font-weight:400}
+.dstat{font-size:14px;color:var(--mute);margin-bottom:1rem;font-variant-numeric:tabular-nums}
+.dstat b{color:var(--ink)}
+.face{border-top:2px solid var(--strong);border-bottom:1px solid var(--rule);padding:1.2rem 0 1.4rem;min-height:12rem}
+.face .q{font-size:23px;font-weight:700;line-height:1.3;color:var(--strong);margin:.5rem 0 1rem;max-width:30em}
+.face .a,.exq .a{border-top:1px solid var(--rule);padding-top:.8rem;margin:.6rem 0 .2rem;font-size:16px;max-width:36em}
+.face .done{font-size:20px;font-weight:700;color:var(--strong)}
+.deck>.small:last-child{margin-top:.6rem}
+
+/* Tabeller */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;border-top:2px solid var(--strong)}
+th,td{text-align:left;vertical-align:top;padding:.5rem .7rem .5rem 0}
+th{font-size:14px;color:var(--strong);border-bottom:1px solid var(--strong)}
+td{border-bottom:1px solid var(--hair)}
+th:empty{padding:0}
+
+
+@media (max-width:560px){
+ body{font-size:15.5px}
+ .hero{padding:1.6rem 0 1.1rem}
+ .hero .sub{font-size:16px}
+ .mgrid,.mgrid.two{grid-template-columns:1fr}
+ h2{font-size:24px}
+ .it{grid-template-columns:1fr;gap:.4rem}
+ .dt{display:flex;align-items:baseline;gap:.4rem}
+ .dt b{font-size:30px;display:inline}.dt small{display:inline;margin:0 0 0 .3rem}
+ .r{grid-template-columns:1fr;gap:0}
+ .next li{grid-template-columns:1fr;gap:0}
+ .clock{font-size:52px}
+ .timer{grid-template-columns:1fr;row-gap:.6rem}
+ .face .q{font-size:20px}
+ .tabs{gap:1rem}.tabs button{font-size:15px}
+}
+@media print{
+ :root{--page:#fff;--ink:#1c1c1c;--mute:#5f5f5f;--rule:#d4d4d4;--hair:#e8e8e8;--strong:#4F0433;--accent:#C4452D;--hl:#FF876F;--ct:var(--c)}
+ body{max-width:none;font-size:11pt;padding:0}
+ .theme-btn{display:none}
+ body::before,.legend,.chips,.note,.next,.tabs,.timer,.btns,.crumb,.modnav,.modes,.dstat{display:none}
+ .panel[hidden],.it[hidden]{display:block}
+ .it{display:grid;break-inside:avoid}.it.past{opacity:1}.it.today{background:none;margin:0;padding:1rem 0}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* Frågor (övningstenta, quiz) */
+.face .q p{margin:0 0 .5rem}.face .q{font-size:21px}
+.opts{list-style:none;margin:.2rem 0 1rem;max-width:44em}
+.opts li{margin:0}
+.opt{display:block;width:100%;text-align:left;font-size:16px;line-height:1.4;padding:.65rem .8rem;border-top:1px solid var(--hair);color:var(--ink);border-left:3px solid transparent}
+.opts li:last-child .opt{border-bottom:1px solid var(--hair)}
+.opt:hover:not(:disabled){background:var(--panel-hover)}
+.opt:disabled{cursor:default}
+.opt.picked{border-left-color:var(--strong);background:var(--panel)}
+.opt.right{border-left-color:var(--ok);color:var(--ok);font-weight:700}
+.opt.wrong{border-left-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.face .a .lab{display:block;margin-bottom:.3rem}
+.face .a p{margin-bottom:.5rem}.face .a ol,.face .a ul{padding-left:1.2rem;margin-bottom:.5rem}.face .a li{margin-bottom:.3rem}
+.match{max-width:44em;margin:.2rem 0 1rem;border-top:1px solid var(--hair)}
+.mrow{display:grid;grid-template-columns:1fr minmax(12rem,1fr);gap:.4rem 1rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--hair)}
+.mrow .mres{grid-column:1/-1;font-size:14px}.mrow .mres:empty{display:none}
+select{font:inherit;font-size:15px;color:var(--ink);background:var(--panel);border:1px solid var(--rule);padding:.35rem .4rem;max-width:100%}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.chosen{outline:2px solid var(--strong);outline-offset:2px}
+.act{align-items:center}
+.qnav{display:flex;justify-content:space-between;gap:.6rem;margin-top:1.2rem;padding-top:.8rem;border-top:1px solid var(--hair)}
+.score{max-width:880px;margin:0 0 1.6rem}.sc-h{margin:2.4rem 0 .6rem}
+.score td:nth-child(2),.score td:nth-child(3){font-variant-numeric:tabular-nums}
+.face .case{font-style:normal;border-left:3px solid var(--rule);padding-left:.8rem;color:var(--ink)}
+.kbd{font-size:13px;color:var(--mute)}
+@media (max-width:560px){.face .q{font-size:18px}.mrow{grid-template-columns:1fr}}
+</style></head><body>
+<button class="theme-btn" type="button" id="theme"></button>
+<div class="hero"><div class="tag">Medicinska ämnen 1 · 1FY030</div><h1>Tentaträning</h1>
+<div class="sub">Övningstenta, flervalsfrågor och repetitionskort. Ditt resultat sparas i webbläsaren på den här enheten.</div></div>
+
+<h2>Stora tentan</h2>
+<p class="small note">Kirurgi 10 p · Ortopedi 16 p · Allmän medicin 10 p · Reumatologi 8 p · Gynekologi 5 p. Godkänt: 66 % totalt och minst 33 % i varje ämne.</p>
+<div class="mgrid">
+<a class="panel-link" href="med1-ovningstenta.html"><span class="kick">Riktiga tentafrågor</span><span class="ptitle">Övningstenta</span><span class="pdesc">Tenta 2026 (51 frågor, 49 p), Canvas-frågorna (46) och 28 övningsfrågor, med facit.</span><span class="mtools" id="p-mt"></span><span class="pbtn">Öppna övningstentan <span class="arr">→</span></span></a>
+<a class="panel-link" href="med1-quiz.html"><span class="kick">Quiz</span><span class="ptitle">Flervalsfrågor</span><span class="pdesc">166 frågor på tentanivå, grupperade efter ämne och område, med förklaring till varje svar.</span><span class="mtools" id="p-mq"></span><span class="pbtn">Öppna quizet <span class="arr">→</span></span></a>
+<a class="panel-link" href="med1-flashcards.html"><span class="kick">Flashcards</span><span class="ptitle">Repetitionskort</span><span class="pdesc">102 kort. Tänk efter, vänd kortet och bedöm dig själv.</span><span class="mtools" id="p-mf"></span><span class="pbtn">Öppna korten <span class="arr">→</span></span></a>
 </div>
-<script>
-function get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
-(function () {
-  const q = get('med1-quiz-v1');
-  if (q) {
-    const v = Object.values(q), done = v.length, ok = v.filter(a => a.ok).length;
-    if (done) document.getElementById('p-mq').innerHTML = done + ' / 166 besvarade · ' + Math.round(ok / done * 100) + ' % rätt<div class="bar"><div style="width:' + (done / 166 * 100) + '%"></div></div>';
-  }
-  const f = get('med1-fc-progress');
-  if (f && f.counts) {
-    const c = f.counts, n = (c.knew || 0) + (c.unsure || 0) + (c.missed || 0);
-    if (n) document.getElementById('p-mf').innerHTML = 'Senast sparat: ' + (c.knew || 0) + ' kunde · ' + (c.unsure || 0) + ' osäkra · ' + (c.missed || 0) + ' missade';
-  }
-})();
-const THEMES = ['system', 'light', 'dark'], TLABEL = { system: 'Tema: auto', light: 'Tema: ljust', dark: 'Tema: mörkt' };
-function curTheme() { try { return localStorage.getItem('fysio-theme') || 'system'; } catch (e) { return 'system'; } }
-function applyTheme(t) { if (t === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); document.getElementById('theme-btn').textContent = TLABEL[t]; }
-function cycleTheme() { const t = THEMES[(THEMES.indexOf(curTheme()) + 1) % 3]; try { localStorage.setItem('fysio-theme', t); } catch (e) {} applyTheme(t); }
-applyTheme(curTheme());
-</script>
-</body>
-</html>
+
+<h2>Neurologi</h2>
+<p class="small note">Egen tenta.</p>
+<div class="mgrid">
+<a class="panel-link" href="neuro-quiz.html"><span class="kick">Quiz</span><span class="ptitle">Flervalsfrågor</span><span class="pdesc">75 frågor med förklaringar.</span><span class="pbtn">Öppna quizet <span class="arr">→</span></span></a>
+<a class="panel-link" href="neuro-flashcards.html"><span class="kick">Flashcards</span><span class="ptitle">Repetitionskort</span><span class="pdesc">70 kort.</span><span class="pbtn">Öppna korten <span class="arr">→</span></span></a>
+</div>
+
+<p class="small note" style="margin-top:3rem">Innehållet bygger på kursens föreläsningar, lärandemål och exempeltentor. Det ersätter inte kurslitteraturen.</p>
+<script>(function(){var r=document.documentElement,b=document.getElementById('theme');
+function lbl(){b.textContent=r.getAttribute('data-theme')==='light'?'Mörkt läge':'Ljust läge';}
+b.addEventListener('click',function(){var l=r.getAttribute('data-theme')!=='light';
+if(l)r.setAttribute('data-theme','light');else r.removeAttribute('data-theme');
+try{localStorage.setItem('fysio-theme',l?'light':'dark');}catch(e){}lbl();});lbl();})();
+(function(){
+function get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+function set(id,t){var e=document.getElementById(id);if(e&&t)e.textContent=t;}
+var q=get('med1-quiz-v1');
+if(q){var v=Object.values(q),ok=v.filter(function(a){return a.ok}).length;if(v.length)set('p-mq',v.length+' av 166 besvarade · '+Math.round(ok/v.length*100)+' % rätt');}
+var f=get('med1-fc-progress');
+if(f&&f.counts){var c=f.counts;if((c.knew||0)+(c.unsure||0)+(c.missed||0))set('p-mf','Senast sparat: '+(c.knew||0)+' kunde · '+(c.unsure||0)+' osäkra · '+(c.missed||0)+' missade');}
+var t=get('med1-tenta-v1');
+if(t){var n=Object.keys(t).length,r=Object.keys(t).filter(function(k){return t[k]===1}).length;if(n)set('p-mt',n+' av 125 besvarade · '+r+' rätt');}
+})();</script></body></html>
